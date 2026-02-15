@@ -2,7 +2,7 @@ import { Controller, Post, Delete, Get, Body, Param, UseGuards, Request } from '
 import { AuthGuard } from '@nestjs/passport';
 import { ParentService } from './parent.service';
 
-@Controller('api/parent')
+@Controller('parent')
 @UseGuards(AuthGuard('jwt'))
 export class ParentController {
   constructor(private parentService: ParentService) {}

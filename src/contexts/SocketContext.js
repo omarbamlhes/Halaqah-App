@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect, useRef } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
 import { io } from 'socket.io-client';
 import { useAuth } from './AuthContext';
 
@@ -6,20 +6,20 @@ const SocketContext = createContext(null);
 
 export function SocketProvider({ children }) {
   const { user } = useAuth();
-  const socketRef = useRef(null);
+  const [socket, setSocket] = useState(null);
   const [notifications, setNotifications] = useState([]);
 
   useEffect(() => {
     if (!user) return;
 
-    const socket = io('http://localhost:3001');
-    socketRef.current = socket;
+    const s = io('http://localhost:3001');
+    setSocket(s);
 
-    socket.on('connect', () => {
-      socket.emit('subscribe:notifications', user.id);
+    s.on('connect', () => {
+      s.emit('subscribe:notifications', user.id);
     });
 
-    socket.on('evaluation:new', (data) => {
+    s.on('evaluation:new', (data) => {
       const id = Date.now();
       setNotifications((prev) => [...prev, { id, ...data }]);
       setTimeout(() => {
@@ -28,8 +28,8 @@ export function SocketProvider({ children }) {
     });
 
     return () => {
-      socket.disconnect();
-      socketRef.current = null;
+      s.disconnect();
+      setSocket(null);
     };
   }, [user]);
 
@@ -38,7 +38,7 @@ export function SocketProvider({ children }) {
   };
 
   return (
-    <SocketContext.Provider value={{ socket: socketRef.current, notifications, dismissNotification }}>
+    <SocketContext.Provider value={{ socket, notifications, dismissNotification }}>
       {children}
     </SocketContext.Provider>
   );

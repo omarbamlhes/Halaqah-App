@@ -23,7 +23,7 @@ export class RecitationService {
   async findBySession(sessionId: number) {
     return this.recitationRepo.find({
       where: { sessionId },
-      relations: ['student', 'session'],
+      relations: ['student', 'session', 'evaluation'],
       order: { createdAt: 'DESC' },
     });
   }
@@ -31,7 +31,7 @@ export class RecitationService {
   async findByStudent(studentId: number) {
     return this.recitationRepo.find({
       where: { studentId },
-      relations: ['session'],
+      relations: ['session', 'evaluation'],
       order: { createdAt: 'DESC' },
     });
   }

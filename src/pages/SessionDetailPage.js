@@ -10,12 +10,11 @@ export default function SessionDetailPage() {
   const { user } = useAuth();
   const [session, setSession] = useState(null);
   const [recitations, setRecitations] = useState([]);
+  const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState({ studentId: '', surahNumber: '', fromAyah: '1', toAyah: '', type: 'new' });
   const [evalForm, setEvalForm] = useState({ recitationId: null, hifdh: 7, tajweed: 7, fluency: 7, notes: '' });
-
-  useEffect(() => { load(); }, [id]);
 
   const load = async () => {
     try {
@@ -25,9 +24,18 @@ export default function SessionDetailPage() {
       ]);
       setSession(sessionRes.data);
       setRecitations(recRes.data);
+
+      if (sessionRes.data.halaqah?.id) {
+        try {
+          const halaqahRes = await api.get(`/halaqahs/${sessionRes.data.halaqah.id}`);
+          setStudents(halaqahRes.data.students || []);
+        } catch (e) {}
+      }
     } catch (err) { console.error(err); }
     finally { setLoading(false); }
   };
+
+  useEffect(() => { load(); }, [id]);
 
   const handleAddRecitation = async (e) => {
     e.preventDefault();
@@ -49,6 +57,12 @@ export default function SessionDetailPage() {
   };
 
   const getSurahName = (num) => quranData.find(s => s.number === num)?.name || '';
+
+  const scoreColor = (score) => {
+    if (score >= 8) return 'text-green-600 bg-green-50';
+    if (score >= 5) return 'text-yellow-600 bg-yellow-50';
+    return 'text-red-600 bg-red-50';
+  };
 
   if (loading) return <LoadingSpinner />;
   if (!session) return <div className="max-w-4xl mx-auto px-4 py-8"><p className="text-red-500">الجلسة غير موجودة</p></div>;
@@ -73,7 +87,10 @@ export default function SessionDetailPage() {
 
         {showForm && (
           <form onSubmit={handleAddRecitation} className="bg-gray-50 rounded-lg p-4 mb-4 grid grid-cols-2 gap-3">
-            <input type="number" placeholder="رقم الطالب (ID)" value={form.studentId} onChange={(e) => setForm({...form, studentId: e.target.value})} className="px-3 py-2 border rounded-lg" required />
+            <select value={form.studentId} onChange={(e) => setForm({...form, studentId: e.target.value})} className="px-3 py-2 border rounded-lg" required>
+              <option value="">اختر الطالب</option>
+              {students.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+            </select>
             <select value={form.surahNumber} onChange={(e) => setForm({...form, surahNumber: e.target.value})} className="px-3 py-2 border rounded-lg" required>
               <option value="">اختر السورة</option>
               {quranData.map(s => <option key={s.number} value={s.number}>{s.name}</option>)}
@@ -99,10 +116,20 @@ export default function SessionDetailPage() {
                     {r.type === 'new' ? 'جديد' : 'مراجعة'}
                   </span>
                 </div>
-                {user.role === 'teacher' && !evalForm.recitationId && (
+                {user.role === 'teacher' && !r.evaluation && !evalForm.recitationId && (
                   <button onClick={() => setEvalForm({...evalForm, recitationId: r.id})} className="text-sm text-primary-600 hover:underline">تقييم</button>
                 )}
               </div>
+
+              {r.evaluation && (
+                <div className="mt-3 flex gap-3">
+                  <span className={`text-xs px-2.5 py-1 rounded-lg font-bold ${scoreColor(r.evaluation.hifdh)}`}>حفظ {r.evaluation.hifdh}/10</span>
+                  <span className={`text-xs px-2.5 py-1 rounded-lg font-bold ${scoreColor(r.evaluation.tajweed)}`}>تجويد {r.evaluation.tajweed}/10</span>
+                  <span className={`text-xs px-2.5 py-1 rounded-lg font-bold ${scoreColor(r.evaluation.fluency)}`}>طلاقة {r.evaluation.fluency}/10</span>
+                  {r.evaluation.notes && <span className="text-xs text-gray-400 self-center">- {r.evaluation.notes}</span>}
+                </div>
+              )}
+
               {evalForm.recitationId === r.id && (
                 <form onSubmit={handleEvaluate} className="mt-3 bg-gray-50 rounded-lg p-3 space-y-2">
                   <div className="grid grid-cols-3 gap-2">

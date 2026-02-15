@@ -5,6 +5,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import Navbar from './components/Navbar';
 import NotificationToast from './components/NotificationToast';
 import LoadingSpinner from './components/LoadingSpinner';
+import Footer from './components/Footer';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import DashboardPage from './pages/DashboardPage';
@@ -17,6 +18,7 @@ import ProgressPage from './pages/ProgressPage';
 import ChatPage from './pages/ChatPage';
 import ParentDashboardPage from './pages/ParentDashboardPage';
 import ParentChildProgressPage from './pages/ParentChildProgressPage';
+import ProfilePage from './pages/ProfilePage';
 
 function AppRoutes() {
   const { user, loading } = useAuth();
@@ -27,6 +29,7 @@ function AppRoutes() {
     <>
       <Navbar />
       <NotificationToast />
+      <main className="flex-1">
       <Routes>
         <Route path="/login" element={user ? <Navigate to="/" /> : <LoginPage />} />
         <Route path="/register" element={user ? <Navigate to="/" /> : <RegisterPage />} />
@@ -40,8 +43,11 @@ function AppRoutes() {
         <Route path="/progress" element={<ProtectedRoute><ProgressPage /></ProtectedRoute>} />
         <Route path="/parent" element={<ProtectedRoute roles={['parent']}><ParentDashboardPage /></ProtectedRoute>} />
         <Route path="/parent/child/:studentId" element={<ProtectedRoute roles={['parent']}><ParentChildProgressPage /></ProtectedRoute>} />
+        <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
+      </main>
+      <Footer />
     </>
   );
 }
@@ -50,7 +56,7 @@ function App() {
   return (
     <AuthProvider>
       <SocketProvider>
-        <div className="min-h-screen bg-gray-50 font-sans">
+        <div className="min-h-screen bg-gray-50 font-sans flex flex-col">
           <AppRoutes />
         </div>
       </SocketProvider>

@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException, ConflictException } from '@nestjs/common';
+import { Injectable, UnauthorizedException, ConflictException, BadRequestException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -48,6 +48,27 @@ export class AuthService {
     if (!user) throw new UnauthorizedException('المستخدم غير موجود');
     const { password, ...result } = user;
     return result;
+  }
+
+  async updateProfile(userId: number, data: { name?: string }) {
+    const user = await this.userRepo.findOne({ where: { id: userId } });
+    if (!user) throw new UnauthorizedException('المستخدم غير موجود');
+    if (data.name) user.name = data.name;
+    await this.userRepo.save(user);
+    const { password, ...result } = user;
+    return result;
+  }
+
+  async changePassword(userId: number, currentPassword: string, newPassword: string) {
+    const user = await this.userRepo.findOne({ where: { id: userId } });
+    if (!user) throw new UnauthorizedException('المستخدم غير موجود');
+
+    const valid = await bcrypt.compare(currentPassword, user.password);
+    if (!valid) throw new BadRequestException('كلمة المرور الحالية غير صحيحة');
+
+    user.password = await bcrypt.hash(newPassword, 10);
+    await this.userRepo.save(user);
+    return { message: 'تم تغيير كلمة المرور بنجاح' };
   }
 
   private generateToken(user: User) {
