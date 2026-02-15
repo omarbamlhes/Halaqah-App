@@ -1,24 +1,60 @@
-import logo from './logo.svg';
-import './App.css';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { SocketProvider } from './contexts/SocketContext';
+import ProtectedRoute from './components/ProtectedRoute';
+import Navbar from './components/Navbar';
+import NotificationToast from './components/NotificationToast';
+import LoadingSpinner from './components/LoadingSpinner';
+import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
+import DashboardPage from './pages/DashboardPage';
+import HalaqahListPage from './pages/HalaqahListPage';
+import HalaqahDetailPage from './pages/HalaqahDetailPage';
+import CreateHalaqahPage from './pages/CreateHalaqahPage';
+import SessionsPage from './pages/SessionsPage';
+import SessionDetailPage from './pages/SessionDetailPage';
+import ProgressPage from './pages/ProgressPage';
+import ChatPage from './pages/ChatPage';
+import ParentDashboardPage from './pages/ParentDashboardPage';
+import ParentChildProgressPage from './pages/ParentChildProgressPage';
+
+function AppRoutes() {
+  const { user, loading } = useAuth();
+
+  if (loading) return <LoadingSpinner />;
+
+  return (
+    <>
+      <Navbar />
+      <NotificationToast />
+      <Routes>
+        <Route path="/login" element={user ? <Navigate to="/" /> : <LoginPage />} />
+        <Route path="/register" element={user ? <Navigate to="/" /> : <RegisterPage />} />
+        <Route path="/" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
+        <Route path="/halaqahs" element={<ProtectedRoute><HalaqahListPage /></ProtectedRoute>} />
+        <Route path="/halaqahs/new" element={<ProtectedRoute roles={['teacher']}><CreateHalaqahPage /></ProtectedRoute>} />
+        <Route path="/halaqahs/:id" element={<ProtectedRoute><HalaqahDetailPage /></ProtectedRoute>} />
+        <Route path="/halaqahs/:halaqahId/sessions" element={<ProtectedRoute><SessionsPage /></ProtectedRoute>} />
+        <Route path="/halaqahs/:halaqahId/chat" element={<ProtectedRoute><ChatPage /></ProtectedRoute>} />
+        <Route path="/sessions/:id" element={<ProtectedRoute><SessionDetailPage /></ProtectedRoute>} />
+        <Route path="/progress" element={<ProtectedRoute><ProgressPage /></ProtectedRoute>} />
+        <Route path="/parent" element={<ProtectedRoute roles={['parent']}><ParentDashboardPage /></ProtectedRoute>} />
+        <Route path="/parent/child/:studentId" element={<ProtectedRoute roles={['parent']}><ParentChildProgressPage /></ProtectedRoute>} />
+        <Route path="*" element={<Navigate to="/" />} />
+      </Routes>
+    </>
+  );
+}
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <AuthProvider>
+      <SocketProvider>
+        <div className="min-h-screen bg-gray-50 font-sans">
+          <AppRoutes />
+        </div>
+      </SocketProvider>
+    </AuthProvider>
   );
 }
 
