@@ -27,6 +27,13 @@ export class HalaqahController {
     return this.halaqahService.findAllPublic();
   }
 
+  @Get('teacher/students-overview')
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.TEACHER)
+  getTeacherStudentsOverview(@Request() req) {
+    return this.halaqahService.getTeacherStudentsOverview(req.user.id);
+  }
+
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.halaqahService.findOne(id);

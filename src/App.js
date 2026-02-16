@@ -18,7 +18,10 @@ import ProgressPage from './pages/ProgressPage';
 import ChatPage from './pages/ChatPage';
 import ParentDashboardPage from './pages/ParentDashboardPage';
 import ParentChildProgressPage from './pages/ParentChildProgressPage';
+import TeacherStudentsPage from './pages/TeacherStudentsPage';
+import TeacherStudentDetailPage from './pages/TeacherStudentDetailPage';
 import ProfilePage from './pages/ProfilePage';
+import LandingPage from './pages/LandingPage';
 
 function AppRoutes() {
   const { user, loading } = useAuth();
@@ -33,7 +36,7 @@ function AppRoutes() {
       <Routes>
         <Route path="/login" element={user ? <Navigate to="/" /> : <LoginPage />} />
         <Route path="/register" element={user ? <Navigate to="/" /> : <RegisterPage />} />
-        <Route path="/" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
+        <Route path="/" element={user ? <DashboardPage /> : <LandingPage />} />
         <Route path="/halaqahs" element={<ProtectedRoute><HalaqahListPage /></ProtectedRoute>} />
         <Route path="/halaqahs/new" element={<ProtectedRoute roles={['teacher']}><CreateHalaqahPage /></ProtectedRoute>} />
         <Route path="/halaqahs/:id" element={<ProtectedRoute><HalaqahDetailPage /></ProtectedRoute>} />
@@ -43,6 +46,8 @@ function AppRoutes() {
         <Route path="/progress" element={<ProtectedRoute><ProgressPage /></ProtectedRoute>} />
         <Route path="/parent" element={<ProtectedRoute roles={['parent']}><ParentDashboardPage /></ProtectedRoute>} />
         <Route path="/parent/child/:studentId" element={<ProtectedRoute roles={['parent']}><ParentChildProgressPage /></ProtectedRoute>} />
+        <Route path="/teacher/students" element={<ProtectedRoute roles={['teacher']}><TeacherStudentsPage /></ProtectedRoute>} />
+        <Route path="/teacher/students/:studentId" element={<ProtectedRoute roles={['teacher']}><TeacherStudentDetailPage /></ProtectedRoute>} />
         <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>

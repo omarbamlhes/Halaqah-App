@@ -29,6 +29,7 @@ export default function Navbar() {
     navLinks.push({ to: '/halaqahs', label: 'الحلقات' });
     if (user.role === 'teacher') {
       navLinks.push({ to: '/halaqahs/new', label: 'إنشاء حلقة' });
+      navLinks.push({ to: '/teacher/students', label: 'الطلاب' });
     }
     if (user.role === 'student') {
       navLinks.push({ to: '/progress', label: 'تقدم الحفظ' });
