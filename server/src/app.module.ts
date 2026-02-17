@@ -8,6 +8,7 @@ import { RecitationModule } from './recitation/recitation.module';
 import { ReviewModule } from './review/review.module';
 import { ChatModule } from './chat/chat.module';
 import { ParentModule } from './parent/parent.module';
+import { BadgeModule } from './badge/badge.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { ParentModule } from './parent/parent.module';
     ReviewModule,
     ChatModule,
     ParentModule,
+    BadgeModule,
   ],
 })
 export class AppModule {}

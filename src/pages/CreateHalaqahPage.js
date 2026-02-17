@@ -25,32 +25,32 @@ export default function CreateHalaqahPage() {
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold text-gray-800 mb-6">إنشاء حلقة جديدة</h1>
+      <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-6">إنشاء حلقة جديدة</h1>
 
-      <div className="bg-white rounded-xl shadow-sm border p-6">
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border dark:border-gray-700 p-6">
         {error && (
-          <div className="bg-red-50 text-red-600 p-3 rounded-lg mb-4 text-sm">{error}</div>
+          <div className="bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 p-3 rounded-lg mb-4 text-sm">{error}</div>
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">اسم الحلقة</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">اسم الحلقة</label>
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
+              className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
               placeholder="مثال: حلقة الفجر"
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">الوصف (اختياري)</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-1">الوصف (اختياري)</label>
             <textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
+              className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
               placeholder="وصف مختصر للحلقة"
               rows={3}
             />
@@ -67,7 +67,7 @@ export default function CreateHalaqahPage() {
             <button
               type="button"
               onClick={() => navigate('/halaqahs')}
-              className="bg-gray-200 text-gray-600 px-6 py-3 rounded-lg font-medium hover:bg-gray-300 transition"
+              className="bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300 px-6 py-3 rounded-lg font-medium hover:bg-gray-300 dark:hover:bg-gray-600 transition"
             >
               إلغاء
             </button>

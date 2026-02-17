@@ -14,7 +14,7 @@ export default function NotificationToast() {
         return (
           <div
             key={n.id}
-            className="bg-white rounded-xl shadow-lg border border-green-200 p-4 toast-enter cursor-pointer"
+            className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-green-200 dark:border-green-800 p-4 toast-enter cursor-pointer"
             onClick={() => dismissNotification(n.id)}
           >
             <div className="flex items-start gap-3">
@@ -22,11 +22,11 @@ export default function NotificationToast() {
                 {avg}
               </div>
               <div>
-                <p className="font-bold text-gray-800 text-sm">تقييم جديد</p>
-                <p className="text-xs text-gray-500 mt-0.5">
+                <p className="font-bold text-gray-800 dark:text-gray-100 text-sm">تقييم جديد</p>
+                <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
                   {surah?.name} - آية {n.fromAyah} إلى {n.toAyah}
                 </p>
-                <div className="flex gap-3 mt-1 text-[10px] text-gray-400">
+                <div className="flex gap-3 mt-1 text-[10px] text-gray-400 dark:text-gray-500">
                   <span>حفظ: {n.hifdh}/10</span>
                   <span>تجويد: {n.tajweed}/10</span>
                   <span>طلاقة: {n.fluency}/10</span>

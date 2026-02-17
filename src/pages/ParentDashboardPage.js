@@ -59,14 +59,14 @@ export default function ParentDashboardPage() {
         <p className="text-green-200 text-sm">لوحة تحكم ولي الأمر - متابعة تقدم أبنائك</p>
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border p-6 mb-6 animate-fade-in-up">
-        <h2 className="text-lg font-bold text-gray-800 mb-4">ربط طالب جديد</h2>
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border dark:border-gray-700 p-6 mb-6 animate-fade-in-up">
+        <h2 className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-4">ربط طالب جديد</h2>
         <form onSubmit={handleAdd} className="flex gap-3">
           <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="flex-1 px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none"
+            className="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-primary-500 outline-none"
             placeholder="البريد الإلكتروني للطالب"
             dir="ltr"
             required
@@ -79,29 +79,29 @@ export default function ParentDashboardPage() {
             {adding ? 'جاري الربط...' : 'ربط'}
           </button>
         </form>
-        {error && <p className="text-red-500 text-sm mt-2 animate-fade-in">{error}</p>}
-        {success && <p className="text-green-600 text-sm mt-2 animate-fade-in">{success}</p>}
+        {error && <p className="text-red-500 dark:text-red-400 text-sm mt-2 animate-fade-in">{error}</p>}
+        {success && <p className="text-green-600 dark:text-green-400 text-sm mt-2 animate-fade-in">{success}</p>}
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border p-6 animate-fade-in-up">
-        <h2 className="text-lg font-bold text-gray-800 mb-4">أبنائي ({children.length})</h2>
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border dark:border-gray-700 p-6 animate-fade-in-up">
+        <h2 className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-4">أبنائي ({children.length})</h2>
         <div className="space-y-3">
           {children.map((child) => (
-            <div key={child.id} className="flex justify-between items-center border rounded-xl p-4 card-hover">
+            <div key={child.id} className="flex justify-between items-center border dark:border-gray-700 rounded-xl p-4 card-hover">
               <div>
-                <p className="font-bold text-gray-800">{child.name}</p>
-                <p className="text-sm text-gray-400" dir="ltr">{child.email}</p>
+                <p className="font-bold text-gray-800 dark:text-gray-100">{child.name}</p>
+                <p className="text-sm text-gray-400 dark:text-gray-500" dir="ltr">{child.email}</p>
               </div>
               <div className="flex gap-2">
                 <Link
                   to={`/parent/child/${child.id}`}
-                  className="bg-primary-50 text-primary-700 px-4 py-2 rounded-lg text-sm font-medium hover:bg-primary-100 transition"
+                  className="bg-primary-50 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 px-4 py-2 rounded-lg text-sm font-medium hover:bg-primary-100 dark:hover:bg-primary-900/50 transition"
                 >
                   عرض التقدم
                 </Link>
                 <button
                   onClick={() => handleRemove(child.id, child.name)}
-                  className="bg-red-50 text-red-600 px-3 py-2 rounded-lg text-sm hover:bg-red-100 transition"
+                  className="bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 px-3 py-2 rounded-lg text-sm hover:bg-red-100 dark:hover:bg-red-900/40 transition"
                 >
                   إلغاء
                 </button>
@@ -109,7 +109,7 @@ export default function ParentDashboardPage() {
             </div>
           ))}
           {children.length === 0 && (
-            <p className="text-gray-400 text-center py-8">لم تربط أي طالب بعد. أدخل بريد الطالب الإلكتروني لربطه.</p>
+            <p className="text-gray-400 dark:text-gray-500 text-center py-8">لم تربط أي طالب بعد. أدخل بريد الطالب الإلكتروني لربطه.</p>
           )}
         </div>
       </div>

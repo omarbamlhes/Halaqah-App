@@ -47,7 +47,7 @@ export default function HalaqahDetailPage() {
   if (loading) {
     return (
       <div className="flex justify-center py-12">
-        <p className="text-gray-500">جاري التحميل...</p>
+        <p className="text-gray-500 dark:text-gray-400">جاري التحميل...</p>
       </div>
     );
   }
@@ -55,7 +55,7 @@ export default function HalaqahDetailPage() {
   if (!halaqah) {
     return (
       <div className="max-w-7xl mx-auto px-4 py-8">
-        <p className="text-red-500">الحلقة غير موجودة</p>
+        <p className="text-red-500 dark:text-red-400">الحلقة غير موجودة</p>
       </div>
     );
   }
@@ -64,12 +64,12 @@ export default function HalaqahDetailPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
-      <div className="bg-white rounded-xl shadow-sm border p-6 mb-6">
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border dark:border-gray-700 p-6 mb-6">
         <div className="flex justify-between items-start">
           <div>
-            <h1 className="text-2xl font-bold text-gray-800">{halaqah.name}</h1>
-            <p className="text-gray-500 mt-1">{halaqah.description || 'بدون وصف'}</p>
-            <p className="text-sm text-gray-400 mt-2">المعلم: {halaqah.teacher?.name}</p>
+            <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100">{halaqah.name}</h1>
+            <p className="text-gray-500 dark:text-gray-400 mt-1">{halaqah.description || 'بدون وصف'}</p>
+            <p className="text-sm text-gray-400 dark:text-gray-500 mt-2">المعلم: {halaqah.teacher?.name}</p>
           </div>
           <div className="flex gap-2">
             {isTeacher && (
@@ -82,7 +82,7 @@ export default function HalaqahDetailPage() {
                 </Link>
                 <button
                   onClick={handleDelete}
-                  className="bg-red-50 text-red-600 px-4 py-2 rounded-lg text-sm hover:bg-red-100 transition"
+                  className="bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 px-4 py-2 rounded-lg text-sm hover:bg-red-100 dark:hover:bg-red-900/40 transition"
                 >
                   حذف
                 </button>
@@ -91,7 +91,7 @@ export default function HalaqahDetailPage() {
             {user.role === 'student' && (
               <button
                 onClick={handleLeave}
-                className="bg-red-50 text-red-600 px-4 py-2 rounded-lg text-sm hover:bg-red-100 transition"
+                className="bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 px-4 py-2 rounded-lg text-sm hover:bg-red-100 dark:hover:bg-red-900/40 transition"
               >
                 مغادرة
               </button>
@@ -100,26 +100,26 @@ export default function HalaqahDetailPage() {
         </div>
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border p-6">
-        <h2 className="text-lg font-bold text-gray-800 mb-4">
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border dark:border-gray-700 p-6">
+        <h2 className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-4">
           الطلاب ({halaqah.students?.length || 0})
         </h2>
         {halaqah.students?.length > 0 ? (
-          <div className="divide-y">
+          <div className="divide-y dark:divide-gray-700">
             {halaqah.students.map((s) => (
               <div key={s.id} className="flex justify-between items-center py-3">
                 <div>
-                  <p className="font-medium text-gray-800">{s.name}</p>
-                  <p className="text-sm text-gray-400">{s.email}</p>
+                  <p className="font-medium text-gray-800 dark:text-gray-100">{s.name}</p>
+                  <p className="text-sm text-gray-400 dark:text-gray-500">{s.email}</p>
                 </div>
-                <span className="text-xs text-gray-400">
+                <span className="text-xs text-gray-400 dark:text-gray-500">
                   انضم {new Date(s.joinedAt).toLocaleDateString('ar')}
                 </span>
               </div>
             ))}
           </div>
         ) : (
-          <p className="text-gray-400 text-center py-4">لا يوجد طلاب بعد</p>
+          <p className="text-gray-400 dark:text-gray-500 text-center py-4">لا يوجد طلاب بعد</p>
         )}
       </div>
     </div>

@@ -15,6 +15,11 @@ body {
   color: #14532d;
 }
 
+.dark ::selection {
+  background-color: #166534;
+  color: #dcfce7;
+}
+
 /* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
@@ -31,6 +36,14 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
   background: #9ca3af;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #4b5563;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: #6b7280;
 }
 
 @layer components {
@@ -58,6 +71,22 @@ body {
     background: linear-gradient(135deg, #e9d5ff 0%, #faf5ff 100%);
   }
 
+  .dark .gradient-card-green {
+    background: linear-gradient(135deg, #14532d 0%, #166534 100%);
+  }
+
+  .dark .gradient-card-blue {
+    background: linear-gradient(135deg, #1e3a5f 0%, #1e40af 100%);
+  }
+
+  .dark .gradient-card-gold {
+    background: linear-gradient(135deg, #78350f 0%, #92400e 100%);
+  }
+
+  .dark .gradient-card-purple {
+    background: linear-gradient(135deg, #581c87 0%, #6b21a8 100%);
+  }
+
   .card-animated {
     opacity: 0;
     animation: fadeInUp 0.5s ease-out forwards;
@@ -79,6 +108,10 @@ body {
     box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
   }
 
+  .dark .card-hover:hover {
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4), 0 8px 10px -6px rgba(0, 0, 0, 0.3);
+  }
+
   .btn-glow {
     position: relative;
     transition: all 0.3s ease;
@@ -88,6 +121,10 @@ body {
     box-shadow: 0 0 20px rgba(22, 163, 74, 0.4);
   }
 
+  .dark .btn-glow:hover {
+    box-shadow: 0 0 20px rgba(22, 163, 74, 0.3);
+  }
+
   .spinner {
     width: 40px;
     height: 40px;
@@ -95,6 +132,11 @@ body {
     border-top-color: #16a34a;
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
+  }
+
+  .dark .spinner {
+    border-color: #374151;
+    border-top-color: #22c55e;
   }
 
   @keyframes spin {
@@ -116,6 +158,10 @@ body {
     align-items: center;
     padding: 3rem 1rem;
     color: #9ca3af;
+  }
+
+  .dark .empty-state {
+    color: #6b7280;
   }
 
   .empty-state svg {

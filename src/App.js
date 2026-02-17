@@ -61,7 +61,7 @@ function App() {
   return (
     <AuthProvider>
       <SocketProvider>
-        <div className="min-h-screen bg-gray-50 font-sans flex flex-col">
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-900 font-sans flex flex-col transition-colors duration-200">
           <AppRoutes />
         </div>
       </SocketProvider>

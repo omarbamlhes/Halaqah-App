@@ -8,3 +8,4 @@ export { MemorizationProgress } from './memorization-progress.entity';
 export { ReviewAssignment } from './review-assignment.entity';
 export { Message } from './message.entity';
 export { ParentChild } from './parent-child.entity';
+export { Attendance, AttendanceStatus } from './attendance.entity';

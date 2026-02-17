@@ -3,6 +3,7 @@ import { useAuth } from '../contexts/AuthContext';
 import api from '../api/axios';
 import quranData from '../data/quran-metadata.json';
 import LoadingSpinner from '../components/LoadingSpinner';
+import BadgesSection from '../components/BadgesSection';
 
 export default function ProgressPage() {
   const { user } = useAuth();
@@ -32,53 +33,57 @@ export default function ProgressPage() {
   };
 
   const getProgressForSurah = (num) => progress.find(p => p.surahNumber === num);
-  const statusColors = { not_started: 'bg-gray-100', in_progress: 'bg-yellow-100', memorized: 'bg-green-200', needs_review: 'bg-orange-100' };
+  const statusColors = { not_started: 'bg-gray-100 dark:bg-gray-700', in_progress: 'bg-yellow-100 dark:bg-yellow-900/40', memorized: 'bg-green-200 dark:bg-green-900/40', needs_review: 'bg-orange-100 dark:bg-orange-900/40' };
 
   if (loading) return <LoadingSpinner />;
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold text-gray-800 mb-6">تقدم الحفظ</h1>
+      <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-6">تقدم الحفظ</h1>
 
-      <div className="bg-white rounded-xl shadow-sm border p-6 mb-6 animate-fade-in-up">
-        <h2 className="text-lg font-bold text-gray-800 mb-4">السور (114)</h2>
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border dark:border-gray-700 p-6 mb-6 animate-fade-in-up">
+        <h2 className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-4">السور (114)</h2>
         <div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10 gap-2">
           {quranData.map((surah) => {
             const p = getProgressForSurah(surah.number);
             const status = p?.status || 'not_started';
             return (
               <div key={surah.number} className={`${statusColors[status]} rounded-lg p-2 text-center card-hover cursor-default`} title={`${surah.name} - ${surah.ayahs} آية`}>
-                <p className="text-xs font-bold text-gray-700">{surah.number}</p>
-                <p className="text-[10px] text-gray-500 truncate">{surah.name}</p>
+                <p className="text-xs font-bold text-gray-700 dark:text-gray-200">{surah.number}</p>
+                <p className="text-[10px] text-gray-500 dark:text-gray-400 truncate">{surah.name}</p>
               </div>
             );
           })}
         </div>
-        <div className="flex gap-4 mt-4 text-xs text-gray-500">
-          <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-gray-100 border"></span> لم يبدأ</span>
-          <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-yellow-100"></span> جاري</span>
-          <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-green-200"></span> محفوظ</span>
-          <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-orange-100"></span> يحتاج مراجعة</span>
+        <div className="flex gap-4 mt-4 text-xs text-gray-500 dark:text-gray-400">
+          <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-gray-100 dark:bg-gray-700 border dark:border-gray-600"></span> لم يبدأ</span>
+          <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-yellow-100 dark:bg-yellow-900/40"></span> جاري</span>
+          <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-green-200 dark:bg-green-900/40"></span> محفوظ</span>
+          <span className="flex items-center gap-1"><span className="w-3 h-3 rounded bg-orange-100 dark:bg-orange-900/40"></span> يحتاج مراجعة</span>
         </div>
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border p-6 animate-fade-in-up">
-        <h2 className="text-lg font-bold text-gray-800 mb-4">المراجعات المطلوبة ({reviews.filter(r => r.status === 'pending').length})</h2>
+      <div className="mb-6">
+        <BadgesSection studentId={user.id} />
+      </div>
+
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border dark:border-gray-700 p-6 animate-fade-in-up">
+        <h2 className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-4">المراجعات المطلوبة ({reviews.filter(r => r.status === 'pending').length})</h2>
         <div className="space-y-3">
           {reviews.map((r) => (
-            <div key={r.id} className="flex justify-between items-center border rounded-lg p-3 card-hover">
+            <div key={r.id} className="flex justify-between items-center border dark:border-gray-700 rounded-lg p-3 card-hover">
               <div>
-                <p className="font-medium text-gray-800">{quranData.find(s => s.number === r.surahNumber)?.name} - آية {r.fromAyah} إلى {r.toAyah}</p>
-                <p className="text-xs text-gray-400">مطلوب قبل: {new Date(r.dueDate).toLocaleDateString('ar')}</p>
+                <p className="font-medium text-gray-800 dark:text-gray-100">{quranData.find(s => s.number === r.surahNumber)?.name} - آية {r.fromAyah} إلى {r.toAyah}</p>
+                <p className="text-xs text-gray-400 dark:text-gray-500">مطلوب قبل: {new Date(r.dueDate).toLocaleDateString('ar')}</p>
               </div>
               {r.status === 'pending' ? (
-                <button onClick={() => handleComplete(r.id)} className="bg-green-50 text-green-700 px-3 py-1.5 rounded-lg text-sm hover:bg-green-100 transition">إتمام</button>
+                <button onClick={() => handleComplete(r.id)} className="bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-300 px-3 py-1.5 rounded-lg text-sm hover:bg-green-100 dark:hover:bg-green-900/50 transition">إتمام</button>
               ) : (
-                <span className="text-green-600 text-sm">مكتملة</span>
+                <span className="text-green-600 dark:text-green-400 text-sm">مكتملة</span>
               )}
             </div>
           ))}
-          {reviews.length === 0 && <p className="text-gray-400 text-center py-4">لا توجد مراجعات</p>}
+          {reviews.length === 0 && <p className="text-gray-400 dark:text-gray-500 text-center py-4">لا توجد مراجعات</p>}
         </div>
       </div>
     </div>

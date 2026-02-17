@@ -332,10 +332,10 @@ export default function LandingPage() {
       </section>
 
       {/* ══════ Features Section ══════ */}
-      <section className="py-20 px-4 bg-white">
+      <section className="py-20 px-4 bg-white dark:bg-gray-900">
         <div className="max-w-6xl mx-auto">
           <RevealSection className="text-center mb-14">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-800" style={{ fontFamily: 'Amiri, serif' }}>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-800 dark:text-gray-100" style={{ fontFamily: 'Amiri, serif' }}>
               مميزات المنصة
             </h2>
             <div className="w-20 h-1 gradient-primary rounded-full mx-auto mt-4" />
@@ -344,12 +344,12 @@ export default function LandingPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {features.map((feature, idx) => (
               <RevealSection key={idx}>
-                <div className={`group card-hover bg-gray-50 rounded-xl p-7 text-center h-full border border-gray-100 hover:border-green-200 transition-colors stagger-${idx + 1}`}>
-                  <div className="text-green-600 flex justify-center mb-4">
+                <div className={`group card-hover bg-gray-50 dark:bg-gray-800 rounded-xl p-7 text-center h-full border border-gray-100 dark:border-gray-700 hover:border-green-200 dark:hover:border-green-700 transition-colors stagger-${idx + 1}`}>
+                  <div className="text-green-600 dark:text-green-400 flex justify-center mb-4">
                     {feature.icon}
                   </div>
-                  <h3 className="text-xl font-bold text-gray-800 mb-3">{feature.title}</h3>
-                  <p className="text-gray-600 leading-relaxed">{feature.description}</p>
+                  <h3 className="text-xl font-bold text-gray-800 dark:text-gray-100 mb-3">{feature.title}</h3>
+                  <p className="text-gray-600 dark:text-gray-300 leading-relaxed">{feature.description}</p>
                 </div>
               </RevealSection>
             ))}
@@ -358,10 +358,10 @@ export default function LandingPage() {
       </section>
 
       {/* ══════ Roles Section ══════ */}
-      <section className="py-20 px-4 bg-gray-50">
+      <section className="py-20 px-4 bg-gray-50 dark:bg-gray-800">
         <div className="max-w-6xl mx-auto">
           <RevealSection className="text-center mb-14">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-800" style={{ fontFamily: 'Amiri, serif' }}>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-800 dark:text-gray-100" style={{ fontFamily: 'Amiri, serif' }}>
               لكل دور مميزاته
             </h2>
             <div className="w-20 h-1 gradient-primary rounded-full mx-auto mt-4" />
@@ -370,14 +370,14 @@ export default function LandingPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {roles.map((role, idx) => (
               <RevealSection key={idx}>
-                <div className={`card-hover bg-white rounded-xl overflow-hidden border-t-4 ${role.borderColor} h-full stagger-${idx + 1}`}>
+                <div className={`card-hover bg-white dark:bg-gray-900 rounded-xl overflow-hidden border-t-4 ${role.borderColor} h-full stagger-${idx + 1}`}>
                   <div className={`bg-gradient-to-l ${role.gradient} text-white text-center py-5`}>
                     <h3 className="text-2xl font-bold">{role.title}</h3>
                   </div>
                   <ul className="p-6 space-y-3">
                     {role.items.map((item, i) => (
-                      <li key={i} className="flex items-start gap-3 text-gray-700">
-                        <svg className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                      <li key={i} className="flex items-start gap-3 text-gray-700 dark:text-gray-200">
+                        <svg className="w-5 h-5 text-green-500 dark:text-green-400 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                           <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
                         </svg>
                         <span>{item}</span>

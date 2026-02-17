@@ -9,7 +9,7 @@ export default function LoadingSpinner({ text = 'جاري التحميل...' }) 
           <Logo size={28} />
         </div>
       </div>
-      <p className="text-gray-400 text-sm">{text}</p>
+      <p className="text-gray-400 dark:text-gray-500 text-sm">{text}</p>
     </div>
   );
 }

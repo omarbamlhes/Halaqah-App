@@ -82,14 +82,14 @@ export default function ChatPage() {
   return (
     <div className="max-w-4xl mx-auto px-4 py-4 flex flex-col" style={{ height: 'calc(100vh - 4rem)' }}>
       <div className="flex justify-between items-center mb-3">
-        <h1 className="text-lg font-bold text-gray-800">المحادثة</h1>
+        <h1 className="text-lg font-bold text-gray-800 dark:text-gray-100">المحادثة</h1>
         {onlineUsers.length > 0 && (
           <div className="flex items-center gap-2">
             <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></span>
-            <span className="text-xs text-gray-500">{onlineUsers.length} متصل</span>
+            <span className="text-xs text-gray-500 dark:text-gray-400">{onlineUsers.length} متصل</span>
             <div className="flex -space-x-1 space-x-reverse">
               {onlineUsers.slice(0, 5).map((u) => (
-                <span key={u.userId} className="w-6 h-6 bg-primary-100 text-primary-700 rounded-full flex items-center justify-center text-[10px] font-bold border-2 border-white" title={u.userName}>
+                <span key={u.userId} className="w-6 h-6 bg-primary-100 dark:bg-primary-900/40 text-primary-700 dark:text-primary-300 rounded-full flex items-center justify-center text-[10px] font-bold border-2 border-white dark:border-gray-900" title={u.userName}>
                   {u.userName[0]}
                 </span>
               ))}
@@ -98,19 +98,19 @@ export default function ChatPage() {
         )}
       </div>
 
-      <div className="flex-1 bg-white rounded-xl shadow-sm border p-4 overflow-y-auto mb-3 space-y-3">
+      <div className="flex-1 bg-white dark:bg-gray-800 rounded-xl shadow-sm border dark:border-gray-700 p-4 overflow-y-auto mb-3 space-y-3">
         {messages.map((m) => (
           <div key={m.id} className={`flex ${m.sender?.id === user.id ? 'justify-start' : 'justify-end'}`}>
             <div className={`max-w-[70%] rounded-2xl px-4 py-2 ${
               m.sender?.id === user.id
                 ? 'bg-primary-600 text-white rounded-br-sm'
-                : 'bg-gray-100 text-gray-800 rounded-bl-sm'
+                : 'bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-100 rounded-bl-sm'
             }`}>
               {m.sender?.id !== user.id && (
                 <p className="text-xs font-medium mb-1 opacity-70">{m.sender?.name}</p>
               )}
               <p className="text-sm">{m.content}</p>
-              <p className={`text-[10px] mt-1 ${m.sender?.id === user.id ? 'text-white/60' : 'text-gray-400'}`}>
+              <p className={`text-[10px] mt-1 ${m.sender?.id === user.id ? 'text-white/60' : 'text-gray-400 dark:text-gray-500'}`}>
                 {new Date(m.createdAt).toLocaleTimeString('ar', { hour: '2-digit', minute: '2-digit' })}
               </p>
             </div>
@@ -119,14 +119,14 @@ export default function ChatPage() {
         <div ref={messagesEndRef} />
       </div>
 
-      {typing && <p className="text-xs text-gray-400 mb-1">{typing} يكتب...</p>}
+      {typing && <p className="text-xs text-gray-400 dark:text-gray-500 mb-1">{typing} يكتب...</p>}
 
       <form onSubmit={handleSend} className="flex gap-2">
         <input
           type="text"
           value={input}
           onChange={handleInputChange}
-          className="flex-1 px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none"
+          className="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-xl focus:ring-2 focus:ring-primary-500 outline-none"
           placeholder="اكتب رسالة..."
         />
         <button type="submit" className="gradient-primary text-white px-6 py-3 rounded-xl font-medium btn-glow">
