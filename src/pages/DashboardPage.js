@@ -13,6 +13,8 @@ export default function DashboardPage() {
   const [recitations, setRecitations] = useState([]);
   const [stats, setStats] = useState({ totalStudents: 0, totalSessions: 0, totalRecitations: 0 });
   const [loading, setLoading] = useState(true);
+  const [halaqahSearch, setHalaqahSearch] = useState('');
+  const [surahFilter, setSurahFilter] = useState('');
 
   const load = async () => {
     try {
@@ -107,9 +109,20 @@ export default function DashboardPage() {
         </div>
       )}
 
-      <h2 className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-4">حلقاتي</h2>
+      <div className="flex items-center gap-3 mb-4">
+        <h2 className="text-lg font-bold text-gray-800 dark:text-gray-100">حلقاتي</h2>
+        {halaqahs.length > 2 && (
+          <input
+            type="text"
+            placeholder="ابحث..."
+            value={halaqahSearch}
+            onChange={(e) => setHalaqahSearch(e.target.value)}
+            className="px-3 py-1.5 border dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none text-sm w-48"
+          />
+        )}
+      </div>
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 mb-8">
-        {halaqahs.map((h) => (
+        {halaqahs.filter(h => !halaqahSearch || h.name.includes(halaqahSearch) || (h.description || '').includes(halaqahSearch)).map((h) => (
           <div key={h.id} className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border dark:border-gray-700 p-5 card-animated card-hover">
             <h3 className="font-bold text-gray-800 dark:text-gray-100 mb-2">{h.name}</h3>
             <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">{h.description || 'بدون وصف'}</p>
@@ -129,12 +142,27 @@ export default function DashboardPage() {
         )}
       </div>
 
-      {user.role === 'student' && recitations.length > 0 && (
+      {user.role === 'student' && recitations.length > 0 && (() => {
+        const surahNumbers = [...new Set(recitations.map(r => r.surahNumber))].sort((a, b) => a - b);
+        const filteredRecitations = surahFilter ? recitations.filter(r => r.surahNumber === parseInt(surahFilter)) : recitations;
+        return (
         <div className="animate-fade-in-up">
-          <h2 className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-4">تسميعاتي ({recitations.length})</h2>
+          <div className="flex items-center gap-3 mb-4">
+            <h2 className="text-lg font-bold text-gray-800 dark:text-gray-100">تسميعاتي ({filteredRecitations.length})</h2>
+            <select
+              value={surahFilter}
+              onChange={(e) => setSurahFilter(e.target.value)}
+              className="px-3 py-1.5 border dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none text-sm"
+            >
+              <option value="">كل السور</option>
+              {surahNumbers.map(num => (
+                <option key={num} value={num}>{getSurahName(num)}</option>
+              ))}
+            </select>
+          </div>
           <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border dark:border-gray-700 p-6">
             <div className="space-y-3">
-              {recitations.map((r) => (
+              {filteredRecitations.map((r) => (
                 <div key={r.id} className="flex justify-between items-center border dark:border-gray-700 rounded-lg p-4 card-hover">
                   <div>
                     <p className="font-medium text-gray-800 dark:text-gray-100">{getSurahName(r.surahNumber)} - آية {r.fromAyah} إلى {r.toAyah}</p>
@@ -160,7 +188,8 @@ export default function DashboardPage() {
             </div>
           </div>
         </div>
-      )}
+        );
+      })()}
     </div>
   );
 }

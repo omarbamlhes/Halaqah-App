@@ -9,6 +9,7 @@ export default function HalaqahListPage() {
   const [publicHalaqahs, setPublicHalaqahs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [tab, setTab] = useState('my');
+  const [search, setSearch] = useState('');
   const { user } = useAuth();
 
   useEffect(() => {
@@ -45,6 +46,11 @@ export default function HalaqahListPage() {
 
   const myIds = halaqahs.map(h => h.id);
 
+  const currentList = tab === 'my' ? halaqahs : publicHalaqahs;
+  const filtered = currentList.filter(h =>
+    h.name.includes(search) || (h.description || '').includes(search) || (h.teacher?.name || '').includes(search)
+  );
+
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-6">
@@ -80,8 +86,18 @@ export default function HalaqahListPage() {
         )}
       </div>
 
+      <div className="mb-6">
+        <input
+          type="text"
+          placeholder="ابحث بالاسم أو الوصف أو المعلم..."
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          className="w-full md:w-96 px-4 py-2.5 border dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none text-sm"
+        />
+      </div>
+
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {(tab === 'my' ? halaqahs : publicHalaqahs).map((h) => (
+        {filtered.map((h) => (
           <div key={h.id} className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border dark:border-gray-700 p-6 card-animated card-hover">
             <Link to={`/halaqahs/${h.id}`}>
               <h3 className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-2">{h.name}</h3>
@@ -98,9 +114,9 @@ export default function HalaqahListPage() {
             )}
           </div>
         ))}
-        {(tab === 'my' ? halaqahs : publicHalaqahs).length === 0 && (
+        {filtered.length === 0 && (
           <p className="text-gray-400 dark:text-gray-500 col-span-full text-center py-8">
-            {tab === 'my' ? 'لا توجد حلقات بعد' : 'لا توجد حلقات متاحة'}
+            {search ? 'لا توجد نتائج للبحث' : tab === 'my' ? 'لا توجد حلقات بعد' : 'لا توجد حلقات متاحة'}
           </p>
         )}
       </div>

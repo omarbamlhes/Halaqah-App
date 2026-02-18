@@ -1,25 +1,32 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import api from '../api/axios';
 import quranData from '../data/quran-metadata.json';
 import LoadingSpinner from '../components/LoadingSpinner';
 import BadgesSection from '../components/BadgesSection';
+import ProgressReport from '../components/ProgressReport';
+import { exportToPdf } from '../utils/exportPdf';
 
 export default function ProgressPage() {
   const { user } = useAuth();
   const [progress, setProgress] = useState([]);
+  const [recitations, setRecitations] = useState([]);
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [exporting, setExporting] = useState(false);
+  const reportRef = useRef(null);
 
   useEffect(() => { load(); }, []);
 
   const load = async () => {
     try {
-      const [progRes, revRes] = await Promise.all([
+      const [progRes, recRes, revRes] = await Promise.all([
         api.get(`/recitations/progress/${user.id}`),
+        api.get(`/recitations/student/${user.id}`),
         api.get(`/reviews/student/${user.id}`),
       ]);
       setProgress(progRes.data);
+      setRecitations(recRes.data);
       setReviews(revRes.data);
     } catch (err) { console.error(err); }
     finally { setLoading(false); }
@@ -39,7 +46,16 @@ export default function ProgressPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
-      <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-6">تقدم الحفظ</h1>
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100">تقدم الحفظ</h1>
+        <button
+          onClick={async () => { setExporting(true); try { await exportToPdf(reportRef.current, `تقرير-${user.name}`); } finally { setExporting(false); } }}
+          disabled={exporting}
+          className="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition disabled:opacity-50"
+        >
+          {exporting ? 'جاري التصدير...' : 'تصدير PDF'}
+        </button>
+      </div>
 
       <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border dark:border-gray-700 p-6 mb-6 animate-fade-in-up">
         <h2 className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-4">السور (114)</h2>
@@ -86,6 +102,14 @@ export default function ProgressPage() {
           {reviews.length === 0 && <p className="text-gray-400 dark:text-gray-500 text-center py-4">لا توجد مراجعات</p>}
         </div>
       </div>
+
+      <ProgressReport
+        ref={reportRef}
+        studentName={user.name}
+        studentId={user.id}
+        progress={progress}
+        recitations={recitations}
+      />
     </div>
   );
 }

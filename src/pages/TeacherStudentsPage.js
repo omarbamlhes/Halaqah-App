@@ -6,6 +6,7 @@ import LoadingSpinner from '../components/LoadingSpinner';
 export default function TeacherStudentsPage() {
   const [students, setStudents] = useState([]);
   const [search, setSearch] = useState('');
+  const [halaqahFilter, setHalaqahFilter] = useState('');
   const [loading, setLoading] = useState(true);
   const [attendanceStats, setAttendanceStats] = useState({});
 
@@ -39,8 +40,11 @@ export default function TeacherStudentsPage() {
   if (loading) return <LoadingSpinner />;
 
   const filtered = students.filter(s =>
-    s.studentName.includes(search) || s.halaqahName.includes(search)
+    (s.studentName.includes(search) || s.halaqahName.includes(search)) &&
+    (!halaqahFilter || s.halaqahId === parseInt(halaqahFilter))
   );
+
+  const uniqueHalaqahsList = [...new Map(students.map(s => [s.halaqahId, s.halaqahName])).entries()];
 
   const uniqueStudents = new Set(students.map(s => s.studentId)).size;
   const uniqueHalaqahs = new Set(students.map(s => s.halaqahId)).size;
@@ -94,14 +98,26 @@ export default function TeacherStudentsPage() {
         </div>
       </div>
 
-      <div className="mb-6 animate-fade-in-up">
+      <div className="flex flex-wrap gap-3 mb-6 animate-fade-in-up">
         <input
           type="text"
           placeholder="ابحث بالاسم أو الحلقة..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full md:w-96 px-4 py-2.5 border dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none text-sm"
+          className="flex-1 min-w-[200px] md:max-w-sm px-4 py-2.5 border dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none text-sm"
         />
+        {uniqueHalaqahsList.length > 1 && (
+          <select
+            value={halaqahFilter}
+            onChange={(e) => setHalaqahFilter(e.target.value)}
+            className="px-4 py-2.5 border dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none text-sm"
+          >
+            <option value="">كل الحلقات</option>
+            {uniqueHalaqahsList.map(([id, name]) => (
+              <option key={id} value={id}>{name}</option>
+            ))}
+          </select>
+        )}
       </div>
 
       {filtered.length === 0 ? (

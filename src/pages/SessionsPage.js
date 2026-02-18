@@ -10,6 +10,7 @@ export default function SessionsPage() {
   const [sessions, setSessions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
+  const [statusFilter, setStatusFilter] = useState('all');
   const [date, setDate] = useState('');
   const [notes, setNotes] = useState('');
 
@@ -44,6 +45,15 @@ export default function SessionsPage() {
   const statusLabels = { scheduled: 'مجدولة', in_progress: 'جارية', completed: 'مكتملة', cancelled: 'ملغاة' };
   const statusColors = { scheduled: 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300', in_progress: 'bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300', completed: 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300', cancelled: 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300' };
 
+  const filteredSessions = statusFilter === 'all' ? sessions : sessions.filter(s => s.status === statusFilter);
+  const filterOptions = [
+    { key: 'all', label: 'الكل' },
+    { key: 'scheduled', label: 'مجدولة' },
+    { key: 'in_progress', label: 'جارية' },
+    { key: 'completed', label: 'مكتملة' },
+    { key: 'cancelled', label: 'ملغاة' },
+  ];
+
   if (loading) return <LoadingSpinner />;
 
   return (
@@ -71,8 +81,27 @@ export default function SessionsPage() {
         </form>
       )}
 
+      <div className="flex flex-wrap gap-2 mb-4">
+        {filterOptions.map((opt) => {
+          const count = opt.key === 'all' ? sessions.length : sessions.filter(s => s.status === opt.key).length;
+          return (
+            <button
+              key={opt.key}
+              onClick={() => setStatusFilter(opt.key)}
+              className={`px-3 py-1.5 rounded-full text-sm font-medium transition ${
+                statusFilter === opt.key
+                  ? 'bg-primary-600 text-white'
+                  : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
+              }`}
+            >
+              {opt.label} ({count})
+            </button>
+          );
+        })}
+      </div>
+
       <div className="space-y-3">
-        {sessions.map((s) => (
+        {filteredSessions.map((s) => (
           <div key={s.id} className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border dark:border-gray-700 p-4 flex justify-between items-center card-animated">
             <div>
               <p className="font-medium text-gray-800 dark:text-gray-100">{new Date(s.scheduledAt).toLocaleString('ar')}</p>
@@ -90,7 +119,7 @@ export default function SessionsPage() {
             </div>
           </div>
         ))}
-        {sessions.length === 0 && <p className="text-gray-400 dark:text-gray-500 text-center py-8">لا توجد جلسات بعد</p>}
+        {filteredSessions.length === 0 && <p className="text-gray-400 dark:text-gray-500 text-center py-8">{statusFilter === 'all' ? 'لا توجد جلسات بعد' : 'لا توجد جلسات بهذه الحالة'}</p>}
       </div>
     </div>
   );

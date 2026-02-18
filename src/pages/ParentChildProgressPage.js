@@ -1,14 +1,18 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import api from '../api/axios';
 import quranData from '../data/quran-metadata.json';
 import LoadingSpinner from '../components/LoadingSpinner';
 import BadgesSection from '../components/BadgesSection';
+import ProgressReport from '../components/ProgressReport';
+import { exportToPdf } from '../utils/exportPdf';
 
 export default function ParentChildProgressPage() {
   const { studentId } = useParams();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [exporting, setExporting] = useState(false);
+  const reportRef = useRef(null);
 
   useEffect(() => { load(); }, [studentId]);
 
@@ -34,9 +38,16 @@ export default function ParentChildProgressPage() {
       <div className="gradient-hero rounded-2xl p-8 mb-8 animate-fade-in">
         <Link to="/parent" className="text-green-200 text-sm hover:text-white transition mb-2 inline-block">&larr; العودة لقائمة الأبناء</Link>
         <h1 className="text-2xl font-bold text-white mb-1">تقدم حفظ: {data.student.name}</h1>
-        <div className="flex gap-6 mt-3">
+        <div className="flex items-center gap-6 mt-3">
           <span className="text-green-200 text-sm">محفوظ: <strong className="text-white">{memorized}</strong> سورة</span>
           <span className="text-green-200 text-sm">قيد الحفظ: <strong className="text-white">{inProgress}</strong> سورة</span>
+          <button
+            onClick={async () => { setExporting(true); try { await exportToPdf(reportRef.current, `تقرير-${data.student.name}`); } finally { setExporting(false); } }}
+            disabled={exporting}
+            className="mr-auto bg-white/20 hover:bg-white/30 text-white px-4 py-1.5 rounded-lg text-sm font-medium transition disabled:opacity-50"
+          >
+            {exporting ? 'جاري التصدير...' : 'تصدير PDF'}
+          </button>
         </div>
       </div>
 
@@ -85,6 +96,14 @@ export default function ParentChildProgressPage() {
           {data.recentRecitations.length === 0 && <p className="text-gray-400 dark:text-gray-500 text-center py-4">لا توجد تسميعات بعد</p>}
         </div>
       </div>
+
+      <ProgressReport
+        ref={reportRef}
+        studentName={data.student.name}
+        studentId={parseInt(studentId)}
+        progress={data.progress}
+        recitations={data.recentRecitations}
+      />
     </div>
   );
 }
