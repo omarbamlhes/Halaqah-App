@@ -1,15 +1,18 @@
 import { Injectable, NotFoundException, ForbiddenException, ConflictException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DataSource } from 'typeorm';
-import { Halaqah, HalaqahStudent, User } from '../entities';
+import { Halaqah, HalaqahStudent, User, NotificationType } from '../entities';
 import { CreateHalaqahDto } from './dto/create-halaqah.dto';
+import { NotificationService } from '../notification/notification.service';
 
 @Injectable()
 export class HalaqahService {
   constructor(
     @InjectRepository(Halaqah) private halaqahRepo: Repository<Halaqah>,
     @InjectRepository(HalaqahStudent) private hsRepo: Repository<HalaqahStudent>,
+    @InjectRepository(User) private userRepo: Repository<User>,
     private dataSource: DataSource,
+    private notificationService: NotificationService,
   ) {}
 
   async create(dto: CreateHalaqahDto, teacherId: number) {
@@ -62,6 +65,17 @@ export class HalaqahService {
 
     const enrollment = this.hsRepo.create({ halaqahId, studentId });
     await this.hsRepo.save(enrollment);
+
+    // Notify the teacher
+    const student = await this.userRepo.findOne({ where: { id: studentId } });
+    await this.notificationService.create({
+      userId: halaqah.teacherId,
+      type: NotificationType.STUDENT_JOINED,
+      title: 'طالب جديد',
+      message: `انضم "${student?.name}" إلى حلقة "${halaqah.name}"`,
+      metadata: { halaqahId, studentId, studentName: student?.name },
+    });
+
     return { message: 'تم الانضمام بنجاح' };
   }
 

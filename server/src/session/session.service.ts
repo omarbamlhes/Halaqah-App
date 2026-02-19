@@ -1,10 +1,11 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Session, Attendance, HalaqahStudent } from '../entities';
+import { Session, Attendance, HalaqahStudent, Halaqah, NotificationType } from '../entities';
 import { CreateSessionDto } from './dto/create-session.dto';
 import { UpdateSessionDto } from './dto/update-session.dto';
 import { AttendanceRecordDto } from './dto/save-attendance.dto';
+import { NotificationService } from '../notification/notification.service';
 
 @Injectable()
 export class SessionService {
@@ -12,11 +13,29 @@ export class SessionService {
     @InjectRepository(Session) private sessionRepo: Repository<Session>,
     @InjectRepository(Attendance) private attendanceRepo: Repository<Attendance>,
     @InjectRepository(HalaqahStudent) private halaqahStudentRepo: Repository<HalaqahStudent>,
+    @InjectRepository(Halaqah) private halaqahRepo: Repository<Halaqah>,
+    private notificationService: NotificationService,
   ) {}
 
   async create(dto: CreateSessionDto) {
     const session = this.sessionRepo.create(dto);
-    return this.sessionRepo.save(session);
+    const saved = await this.sessionRepo.save(session);
+
+    // Notify all students in the halaqah
+    const halaqah = await this.halaqahRepo.findOne({ where: { id: dto.halaqahId } });
+    const students = await this.halaqahStudentRepo.find({ where: { halaqahId: dto.halaqahId } });
+    const date = new Date(dto.scheduledAt).toLocaleDateString('ar');
+    for (const hs of students) {
+      await this.notificationService.create({
+        userId: hs.studentId,
+        type: NotificationType.SESSION_CREATED,
+        title: 'جلسة جديدة',
+        message: `تم إنشاء جلسة جديدة في حلقة "${halaqah?.name}" بتاريخ ${date}`,
+        metadata: { sessionId: saved.id, halaqahId: dto.halaqahId },
+      });
+    }
+
+    return saved;
   }
 
   async findByHalaqah(halaqahId: number) {

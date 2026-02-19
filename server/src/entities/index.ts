@@ -9,3 +9,4 @@ export { ReviewAssignment } from './review-assignment.entity';
 export { Message } from './message.entity';
 export { ParentChild } from './parent-child.entity';
 export { Attendance, AttendanceStatus } from './attendance.entity';
+export { Notification, NotificationType } from './notification.entity';

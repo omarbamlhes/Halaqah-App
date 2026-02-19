@@ -9,6 +9,8 @@ import { ReviewModule } from './review/review.module';
 import { ChatModule } from './chat/chat.module';
 import { ParentModule } from './parent/parent.module';
 import { BadgeModule } from './badge/badge.module';
+import { NotificationModule } from './notification/notification.module';
+import { DashboardModule } from './dashboard/dashboard.module';
 
 @Module({
   imports: [
@@ -31,6 +33,8 @@ import { BadgeModule } from './badge/badge.module';
     ChatModule,
     ParentModule,
     BadgeModule,
+    NotificationModule,
+    DashboardModule,
   ],
 })
 export class AppModule {}

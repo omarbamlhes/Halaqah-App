@@ -1,10 +1,11 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Recitation, Evaluation, MemorizationProgress } from '../entities';
+import { Recitation, Evaluation, MemorizationProgress, ParentChild, NotificationType } from '../entities';
 import { CreateRecitationDto } from './dto/create-recitation.dto';
 import { CreateEvaluationDto } from './dto/create-evaluation.dto';
 import { ChatGateway } from '../chat/chat.gateway';
+import { NotificationService } from '../notification/notification.service';
 
 @Injectable()
 export class RecitationService {
@@ -12,7 +13,9 @@ export class RecitationService {
     @InjectRepository(Recitation) private recitationRepo: Repository<Recitation>,
     @InjectRepository(Evaluation) private evaluationRepo: Repository<Evaluation>,
     @InjectRepository(MemorizationProgress) private progressRepo: Repository<MemorizationProgress>,
+    @InjectRepository(ParentChild) private parentChildRepo: Repository<ParentChild>,
     private chatGateway: ChatGateway,
+    private notificationService: NotificationService,
   ) {}
 
   async createRecitation(dto: CreateRecitationDto) {
@@ -54,6 +57,45 @@ export class RecitationService {
       tajweed: saved.tajweed,
       fluency: saved.fluency,
     });
+
+    // Create notification for student
+    const avg = Math.round(((saved.hifdh + saved.tajweed + saved.fluency) / 3) * 10) / 10;
+    await this.notificationService.create({
+      userId: recitation.studentId,
+      type: NotificationType.EVALUATION_RECEIVED,
+      title: 'تقييم جديد',
+      message: `حصلت على معدل ${avg}/10 في تسميعك`,
+      metadata: {
+        recitationId: recitation.id,
+        surahNumber: recitation.surahNumber,
+        fromAyah: recitation.fromAyah,
+        toAyah: recitation.toAyah,
+        hifdh: saved.hifdh,
+        tajweed: saved.tajweed,
+        fluency: saved.fluency,
+      },
+    });
+
+    // Notify parents
+    const parentLinks = await this.parentChildRepo.find({
+      where: { studentId: recitation.studentId },
+    });
+    for (const link of parentLinks) {
+      await this.notificationService.create({
+        userId: link.parentId,
+        type: NotificationType.CHILD_EVALUATION,
+        title: 'تقييم جديد لابنك',
+        message: `حصل ابنك على معدل ${avg}/10`,
+        metadata: {
+          studentId: recitation.studentId,
+          recitationId: recitation.id,
+          surahNumber: recitation.surahNumber,
+          hifdh: saved.hifdh,
+          tajweed: saved.tajweed,
+          fluency: saved.fluency,
+        },
+      });
+    }
 
     return saved;
   }
