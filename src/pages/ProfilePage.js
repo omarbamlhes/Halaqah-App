@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
+import { HeroSection } from '../components/IslamicDecor';
 import api from '../api/axios';
 
 export default function ProfilePage() {
@@ -55,10 +56,11 @@ export default function ProfilePage() {
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-8">
-      <div className="gradient-hero rounded-2xl p-8 mb-8 animate-fade-in">
-        <h1 className="text-2xl font-bold text-white mb-1">حسابي</h1>
-        <p className="text-green-200 text-sm">{user.email} - {roleLabel[user.role]}</p>
-      </div>
+      <HeroSection
+        title="حسابي"
+        subtitle={`${user.email} - ${roleLabel[user.role]}`}
+        verse="رَبِّ زِدْنِي عِلْمًا"
+      />
 
       <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border dark:border-gray-700 p-6 mb-6 animate-fade-in-up">
         <h2 className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-4">تعديل الاسم</h2>

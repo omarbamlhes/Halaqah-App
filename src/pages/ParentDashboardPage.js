@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import api from '../api/axios';
 import LoadingSpinner from '../components/LoadingSpinner';
+import { HeroSection } from '../components/IslamicDecor';
 
 export default function ParentDashboardPage() {
   const { user } = useAuth();
@@ -71,10 +72,11 @@ export default function ParentDashboardPage() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
-      <div className="gradient-hero rounded-2xl p-8 mb-8 animate-fade-in">
-        <h1 className="text-2xl font-bold text-white mb-1">مرحبا، {user.name}</h1>
-        <p className="text-green-200 text-sm">لوحة تحكم ولي الأمر - متابعة تقدم أبنائك</p>
-      </div>
+      <HeroSection
+        title={`مرحبا، ${user.name}`}
+        subtitle="لوحة تحكم ولي الأمر - متابعة تقدم أبنائك"
+        verse="رَبَّنَا هَبْ لَنَا مِنْ أَزْوَاجِنَا وَذُرِّيَّاتِنَا قُرَّةَ أَعْيُنٍ"
+      />
 
       {/* Add child form */}
       <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border dark:border-gray-700 p-6 mb-6 animate-fade-in-up">

@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useEffect, useRef, useState, useCallback } from 'react';
 import Logo from '../components/Logo';
+import { IslamicPattern } from '../components/IslamicDecor';
 
 // ─── Scroll Reveal Hook ───
 function useScrollReveal() {
@@ -87,41 +88,12 @@ function RevealSection({ children, className = '', stagger = false }) {
   );
 }
 
-// ─── Islamic Geometric Pattern (8-pointed star tessellation) ───
-function IslamicPattern({ opacity = 0.07 }) {
-  return (
-    <div className="absolute inset-0 pointer-events-none" style={{ opacity }}>
-      <svg className="w-full h-full" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <pattern id="islamicStar" x="0" y="0" width="80" height="80" patternUnits="userSpaceOnUse">
-            {/* 8-pointed star: alternating outer tips and inner concave vertices */}
-            <path
-              d="M80,40 L56,34 L68,12 L46,24 L40,0 L34,24 L12,12 L24,34 L0,40 L24,46 L12,68 L34,56 L40,80 L46,56 L68,68 L56,46 Z"
-              fill="none" stroke="white" strokeWidth="1"
-            />
-            {/* Inner octagon connecting the concave points */}
-            <polygon
-              points="56,34 46,24 34,24 24,34 24,46 34,56 46,56 56,46"
-              fill="none" stroke="white" strokeWidth="0.6"
-            />
-            {/* Center ornament */}
-            <circle cx="40" cy="40" r="6" fill="none" stroke="white" strokeWidth="0.5" />
-            {/* Tiny diamond at center */}
-            <polygon points="40,36 44,40 40,44 36,40" fill="white" opacity="0.3" />
-          </pattern>
-        </defs>
-        <rect width="100%" height="100%" fill="url(#islamicStar)" />
-      </svg>
-    </div>
-  );
-}
-
 // ─── Floating Decorations for Hero ───
 function HeroDecorations() {
   return (
     <>
       {/* Islamic geometric pattern background */}
-      <IslamicPattern opacity={0.08} />
+      <IslamicPattern opacity={0.08} id="landingHeroPattern" />
 
       {/* Floating stars */}
       <div className="floating absolute top-16 right-[10%] opacity-20">
@@ -282,6 +254,12 @@ export default function LandingPage() {
       {/* ══════ Hero Section ══════ */}
       <section className="gradient-hero text-white py-24 px-4 relative overflow-hidden min-h-[85vh] flex items-center">
         <HeroDecorations />
+        {/* Verse watermark */}
+        <div className="absolute inset-0 flex items-end justify-center pointer-events-none overflow-hidden" style={{ opacity: 0.05 }}>
+          <p className="text-white text-4xl md:text-6xl font-bold pb-6 whitespace-nowrap" style={{ fontFamily: 'Amiri, serif' }}>
+            اقْرَأْ بِاسْمِ رَبِّكَ الَّذِي خَلَقَ
+          </p>
+        </div>
         <div className="max-w-4xl mx-auto text-center relative z-10">
           <div className="flex justify-center mb-6 animate-bounce-in">
             <Logo size={80} dark />
@@ -394,7 +372,7 @@ export default function LandingPage() {
       {/* ══════ CTA Section ══════ */}
       <section className="gradient-hero text-white py-20 px-4 relative overflow-hidden">
         {/* Islamic pattern + subtle decoration */}
-        <IslamicPattern opacity={0.05} />
+        <IslamicPattern opacity={0.05} id="landingCtaPattern" />
         <div className="floating-slow hero-particle w-40 h-40 bg-white top-0 right-[5%]" />
         <div className="floating hero-particle w-24 h-24 bg-green-300 bottom-0 left-[10%]" style={{ animationDelay: '2s' }} />
 

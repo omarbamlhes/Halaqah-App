@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../api/axios';
 import LoadingSpinner from '../components/LoadingSpinner';
+import { HeroSection } from '../components/IslamicDecor';
 
 export default function TeacherStudentsPage() {
   const [students, setStudents] = useState([]);
@@ -72,12 +73,11 @@ export default function TeacherStudentsPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
-      <div className="gradient-hero rounded-2xl p-8 mb-8 animate-fade-in">
-        <h1 className="text-2xl font-bold text-white mb-2">نظرة عامة على الطلاب</h1>
-        <p className="text-green-200 text-sm">
-          {uniqueStudents} طالب في {uniqueHalaqahs} حلقة
-        </p>
-      </div>
+      <HeroSection
+        title="نظرة عامة على الطلاب"
+        subtitle={`${uniqueStudents} طالب في ${uniqueHalaqahs} حلقة`}
+        verse="خَيْرُكُمْ مَنْ تَعَلَّمَ الْقُرْآنَ وَعَلَّمَهُ"
+      />
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6 animate-fade-in-up">
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border dark:border-gray-700 p-4 text-center">

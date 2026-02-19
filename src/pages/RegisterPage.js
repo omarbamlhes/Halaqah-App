@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import Logo from '../components/Logo';
+import { IslamicPattern } from '../components/IslamicDecor';
 
 export default function RegisterPage() {
   const [name, setName] = useState('');
@@ -36,10 +37,13 @@ export default function RegisterPage() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 px-4 py-8">
       <div className="max-w-md w-full animate-fade-in-up">
-        <div className="gradient-hero rounded-t-2xl p-8 text-center flex flex-col items-center">
-          <Logo size={64} dark />
-          <h1 className="text-3xl font-bold text-white mt-3 mb-1" style={{ fontFamily: 'Amiri, serif' }}>حلقة</h1>
-          <p className="text-green-200 text-sm">انضم إلينا في رحلة حفظ القرآن</p>
+        <div className="gradient-hero rounded-t-2xl p-8 text-center flex flex-col items-center relative overflow-hidden">
+          <IslamicPattern opacity={0.06} id="registerPattern" />
+          <div className="relative z-10">
+            <Logo size={64} dark />
+            <h1 className="text-3xl font-bold text-white mt-3 mb-1" style={{ fontFamily: 'Amiri, serif' }}>حلقة</h1>
+            <p className="text-green-200 text-sm">انضم إلينا في رحلة حفظ القرآن</p>
+          </div>
         </div>
 
         <div className="bg-white dark:bg-gray-800 rounded-b-2xl shadow-lg p-8">

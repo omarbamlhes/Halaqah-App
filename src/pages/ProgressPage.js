@@ -3,6 +3,7 @@ import { useAuth } from '../contexts/AuthContext';
 import api from '../api/axios';
 import quranData from '../data/quran-metadata.json';
 import LoadingSpinner from '../components/LoadingSpinner';
+import { HeroSection } from '../components/IslamicDecor';
 import BadgesSection from '../components/BadgesSection';
 import ProgressReport from '../components/ProgressReport';
 import { exportToPdf } from '../utils/exportPdf';
@@ -46,16 +47,18 @@ export default function ProgressPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-gray-800 dark:text-gray-100">تقدم الحفظ</h1>
+      <HeroSection
+        title="تقدم الحفظ"
+        verse="وَلَقَدْ يَسَّرْنَا الْقُرْآنَ لِلذِّكْرِ"
+      >
         <button
           onClick={async () => { setExporting(true); try { await exportToPdf(reportRef.current, `تقرير-${user.name}`); } finally { setExporting(false); } }}
           disabled={exporting}
-          className="bg-primary-600 hover:bg-primary-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition disabled:opacity-50"
+          className="bg-white/20 hover:bg-white/30 text-white px-4 py-1.5 rounded-lg text-sm font-medium transition disabled:opacity-50"
         >
           {exporting ? 'جاري التصدير...' : 'تصدير PDF'}
         </button>
-      </div>
+      </HeroSection>
 
       <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border dark:border-gray-700 p-6 mb-6 animate-fade-in-up">
         <h2 className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-4">السور (114)</h2>

@@ -4,6 +4,7 @@ import { useAuth } from '../contexts/AuthContext';
 import api from '../api/axios';
 import LoadingSpinner from '../components/LoadingSpinner';
 import Logo from '../components/Logo';
+import { HeroSection } from '../components/IslamicDecor';
 import BadgesSection from '../components/BadgesSection';
 import quranData from '../data/quran-metadata.json';
 import timeAgo from '../utils/timeAgo';
@@ -34,15 +35,12 @@ export default function DashboardPage() {
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
       {/* Hero */}
-      <div className="gradient-hero rounded-2xl p-8 mb-8 animate-fade-in flex items-center gap-5">
-        <Logo size={56} dark />
-        <div>
-          <h1 className="text-2xl font-bold text-white mb-1">مرحبا، {user.name}</h1>
-          <p className="text-green-200 text-sm">
-            {user.role === 'teacher' ? 'لوحة تحكم المعلم' : 'لوحة تحكم الطالب'}
-          </p>
-        </div>
-      </div>
+      <HeroSection
+        title={`مرحبا، ${user.name}`}
+        subtitle={user.role === 'teacher' ? 'لوحة تحكم المعلم' : 'لوحة تحكم الطالب'}
+        icon={<Logo size={56} dark />}
+        verse="بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ"
+      />
 
       {/* Stat Cards */}
       {user.role === 'teacher' ? (
@@ -70,8 +68,8 @@ function TeacherDashboard({ data, getSurahName, scoreColor }) {
     <>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
         {statCards.map((card, i) => (
-          <div key={i} className={`${card.gradient} rounded-xl shadow-sm border dark:border-gray-700 p-5 text-center card-animated card-hover`}>
-            <div className={`stat-icon ${card.iconBg}`}>{card.icon}</div>
+          <div key={i} className={`${card.gradient} rounded-xl shadow-sm border dark:border-gray-700 p-5 text-center card-animated card-hover shimmer`}>
+            <div className={`stat-icon ${card.iconBg} icon-glow`}>{card.icon}</div>
             <p className={`text-3xl font-bold ${card.color} animate-count-up`}>{card.value}</p>
             <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">{card.label}</p>
           </div>
@@ -202,8 +200,8 @@ function StudentDashboard({ data, user, getSurahName, scoreColor }) {
     <>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
         {statCards.map((card, i) => (
-          <div key={i} className={`${card.gradient} rounded-xl shadow-sm border dark:border-gray-700 p-5 text-center card-animated card-hover`}>
-            <div className={`stat-icon ${card.iconBg}`}>{card.icon}</div>
+          <div key={i} className={`${card.gradient} rounded-xl shadow-sm border dark:border-gray-700 p-5 text-center card-animated card-hover shimmer`}>
+            <div className={`stat-icon ${card.iconBg} icon-glow`}>{card.icon}</div>
             <p className={`text-3xl font-bold ${card.color} animate-count-up`}>{card.value}</p>
             <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">{card.label}</p>
           </div>

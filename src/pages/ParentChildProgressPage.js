@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import api from '../api/axios';
 import quranData from '../data/quran-metadata.json';
 import LoadingSpinner from '../components/LoadingSpinner';
+import { HeroSection } from '../components/IslamicDecor';
 import BadgesSection from '../components/BadgesSection';
 import ProgressReport from '../components/ProgressReport';
 import { exportToPdf } from '../utils/exportPdf';
@@ -35,10 +36,12 @@ export default function ParentChildProgressPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
-      <div className="gradient-hero rounded-2xl p-8 mb-8 animate-fade-in">
+      <HeroSection
+        title={`تقدم حفظ: ${data.student.name}`}
+        verse="وَقُلْ رَبِّ ارْحَمْهُمَا كَمَا رَبَّيَانِي صَغِيرًا"
+      >
         <Link to="/parent" className="text-green-200 text-sm hover:text-white transition mb-2 inline-block">&larr; العودة لقائمة الأبناء</Link>
-        <h1 className="text-2xl font-bold text-white mb-1">تقدم حفظ: {data.student.name}</h1>
-        <div className="flex items-center gap-6 mt-3">
+        <div className="flex items-center gap-6 mt-2">
           <span className="text-green-200 text-sm">محفوظ: <strong className="text-white">{memorized}</strong> سورة</span>
           <span className="text-green-200 text-sm">قيد الحفظ: <strong className="text-white">{inProgress}</strong> سورة</span>
           <button
@@ -49,7 +52,7 @@ export default function ParentChildProgressPage() {
             {exporting ? 'جاري التصدير...' : 'تصدير PDF'}
           </button>
         </div>
-      </div>
+      </HeroSection>
 
       <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border dark:border-gray-700 p-6 mb-6 animate-fade-in-up">
         <h2 className="text-lg font-bold text-gray-800 dark:text-gray-100 mb-4">السور (114)</h2>
