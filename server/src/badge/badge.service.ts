@@ -1,7 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Recitation, Evaluation, MemorizationProgress, Attendance, Session, AttendanceStatus } from '../entities';
+import { Recitation, Evaluation, MemorizationProgress, Attendance, Session, AttendanceStatus, StudentBadge, PointReason, NotificationType } from '../entities';
+import { PointsService } from '../points/points.service';
+import { NotificationService } from '../notification/notification.service';
 
 export interface Badge {
   id: string;
@@ -19,6 +21,9 @@ export class BadgeService {
     @InjectRepository(MemorizationProgress) private progressRepo: Repository<MemorizationProgress>,
     @InjectRepository(Attendance) private attendanceRepo: Repository<Attendance>,
     @InjectRepository(Session) private sessionRepo: Repository<Session>,
+    @InjectRepository(StudentBadge) private studentBadgeRepo: Repository<StudentBadge>,
+    private pointsService: PointsService,
+    private notificationService: NotificationService,
   ) {}
 
   async getStudentBadges(studentId: number) {
@@ -114,6 +119,35 @@ export class BadgeService {
         totalBadges: badges.length,
       },
     };
+  }
+
+  async checkAndPersistBadges(studentId: number) {
+    const { badges } = await this.getStudentBadges(studentId);
+    const earnedBadges = badges.filter(b => b.earned);
+
+    const existingBadges = await this.studentBadgeRepo.find({ where: { studentId } });
+    const existingIds = new Set(existingBadges.map(b => b.badgeId));
+
+    for (const badge of earnedBadges) {
+      if (!existingIds.has(badge.id)) {
+        await this.studentBadgeRepo.save(
+          this.studentBadgeRepo.create({ studentId, badgeId: badge.id }),
+        );
+        await this.pointsService.awardPoints({
+          studentId,
+          reason: PointReason.BADGE_EARNED,
+          referenceType: 'badge',
+          description: `شارة: ${badge.name}`,
+        });
+        await this.notificationService.create({
+          userId: studentId,
+          type: NotificationType.BADGE_EARNED,
+          title: 'شارة جديدة!',
+          message: `حصلت على شارة "${badge.name}"`,
+          metadata: { badgeId: badge.id },
+        });
+      }
+    }
   }
 
   private async getAttendanceData(studentId: number) {

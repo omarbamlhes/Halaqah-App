@@ -1,11 +1,13 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Recitation, Evaluation, MemorizationProgress, ParentChild, NotificationType } from '../entities';
+import { Recitation, Evaluation, MemorizationProgress, ParentChild, NotificationType, PointReason, ChallengeType } from '../entities';
 import { CreateRecitationDto } from './dto/create-recitation.dto';
 import { CreateEvaluationDto } from './dto/create-evaluation.dto';
 import { ChatGateway } from '../chat/chat.gateway';
 import { NotificationService } from '../notification/notification.service';
+import { PointsService } from '../points/points.service';
+import { ChallengeService } from '../challenge/challenge.service';
 
 @Injectable()
 export class RecitationService {
@@ -16,11 +18,29 @@ export class RecitationService {
     @InjectRepository(ParentChild) private parentChildRepo: Repository<ParentChild>,
     private chatGateway: ChatGateway,
     private notificationService: NotificationService,
+    private pointsService: PointsService,
+    private challengeService: ChallengeService,
   ) {}
 
   async createRecitation(dto: CreateRecitationDto) {
     const recitation = this.recitationRepo.create(dto);
-    return this.recitationRepo.save(recitation);
+    const saved = await this.recitationRepo.save(recitation);
+
+    // Award points for recitation
+    const reason = saved.type === 'review' ? PointReason.RECITATION_REVIEW : PointReason.RECITATION_NEW;
+    await this.pointsService.awardPoints({
+      studentId: saved.studentId,
+      reason,
+      referenceId: saved.id,
+      referenceType: 'recitation',
+      description: reason === PointReason.RECITATION_NEW ? 'تسميع جديد' : 'مراجعة تسميع',
+    });
+
+    // Update challenge progress
+    const challengeType = saved.type === 'review' ? ChallengeType.REVIEW_RECITATION : ChallengeType.NEW_RECITATION;
+    await this.challengeService.updateProgress(saved.studentId, challengeType);
+
+    return saved;
   }
 
   async findBySession(sessionId: number) {
@@ -57,6 +77,30 @@ export class RecitationService {
       tajweed: saved.tajweed,
       fluency: saved.fluency,
     });
+
+    // Award points for evaluation quality
+    if (saved.hifdh >= 9 && saved.tajweed >= 9 && saved.fluency >= 9) {
+      await this.pointsService.awardPoints({
+        studentId: recitation.studentId,
+        reason: PointReason.EVALUATION_PERFECT,
+        referenceId: saved.id,
+        referenceType: 'evaluation',
+        description: 'تقييم ممتاز',
+      });
+    } else if (saved.hifdh >= 8 && saved.tajweed >= 8 && saved.fluency >= 8) {
+      await this.pointsService.awardPoints({
+        studentId: recitation.studentId,
+        reason: PointReason.EVALUATION_GOOD,
+        referenceId: saved.id,
+        referenceType: 'evaluation',
+        description: 'تقييم جيد',
+      });
+    }
+
+    // Update challenge for good score
+    if (saved.hifdh >= 8 && saved.tajweed >= 8 && saved.fluency >= 8) {
+      await this.challengeService.updateProgress(recitation.studentId, ChallengeType.GET_GOOD_SCORE);
+    }
 
     // Create notification for student
     const avg = Math.round(((saved.hifdh + saved.tajweed + saved.fluency) / 3) * 10) / 10;
@@ -110,6 +154,7 @@ export class RecitationService {
     });
 
     const ayahsCount = recitation.toAyah - recitation.fromAyah + 1;
+    const wasPreviouslyMemorized = progress?.status === 'memorized';
 
     if (!progress) {
       progress = this.progressRepo.create({
@@ -129,6 +174,17 @@ export class RecitationService {
     }
 
     await this.progressRepo.save(progress);
+
+    // Award points for completing a surah
+    if (progress.status === 'memorized' && !wasPreviouslyMemorized) {
+      await this.pointsService.awardPoints({
+        studentId: recitation.studentId,
+        reason: PointReason.SURAH_COMPLETED,
+        referenceId: recitation.surahNumber,
+        referenceType: 'surah',
+        description: `إتمام حفظ سورة`,
+      });
+    }
   }
 
   async getStudentProgress(studentId: number) {

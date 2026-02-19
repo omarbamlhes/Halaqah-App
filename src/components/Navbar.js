@@ -82,8 +82,11 @@ export default function Navbar() {
       navLinks.push({ to: '/halaqahs/new', label: 'إنشاء حلقة' });
       navLinks.push({ to: '/teacher/students', label: 'الطلاب' });
     }
+    navLinks.push({ to: '/leaderboard', label: 'المتصدرين' });
+    navLinks.push({ to: '/rewards', label: 'المكافآت' });
     if (user.role === 'student') {
       navLinks.push({ to: '/progress', label: 'تقدم الحفظ' });
+      navLinks.push({ to: '/challenges', label: 'التحديات' });
     }
   }
   navLinks.push({ to: '/profile', label: 'حسابي' });

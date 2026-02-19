@@ -208,8 +208,13 @@ function StudentDashboard({ data, user, getSurahName, scoreColor }) {
         ))}
       </div>
 
-      {/* Average Score + Streak */}
-      <div className="grid grid-cols-2 gap-4 mb-8 animate-fade-in-up">
+      {/* Points + Average Score + Streak */}
+      <div className="grid grid-cols-3 gap-4 mb-8 animate-fade-in-up">
+        <Link to="/leaderboard" className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border dark:border-gray-700 p-5 text-center card-hover">
+          <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">النقاط</p>
+          <p className="text-3xl font-bold text-yellow-600 dark:text-yellow-400">{data.totalPoints || 0}</p>
+          <p className="text-xs text-gray-400 dark:text-gray-500 mt-1">الترتيب: #{data.rank || '-'}</p>
+        </Link>
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border dark:border-gray-700 p-5 text-center">
           <p className="text-sm text-gray-500 dark:text-gray-400 mb-1">المعدل العام</p>
           <p className={`text-3xl font-bold ${data.averageScore >= 8 ? 'text-green-600 dark:text-green-400' : data.averageScore >= 5 ? 'text-yellow-600 dark:text-yellow-400' : 'text-red-600 dark:text-red-400'}`}>
@@ -223,6 +228,48 @@ function StudentDashboard({ data, user, getSurahName, scoreColor }) {
           </p>
         </div>
       </div>
+
+      {/* Daily Challenges Widget */}
+      {data.todayChallenges && data.todayChallenges.length > 0 && (
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border dark:border-gray-700 p-5 mb-8 animate-fade-in-up">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="font-bold text-gray-800 dark:text-gray-100">تحديات اليوم</h3>
+            <Link to="/challenges" className="text-xs text-primary-600 dark:text-primary-400 hover:underline">عرض الكل</Link>
+          </div>
+          <div className="space-y-3">
+            {data.todayChallenges.map(ch => (
+              <div key={ch.id} className="flex items-center gap-3">
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm ${
+                  ch.status === 'completed'
+                    ? 'bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400'
+                    : 'bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400'
+                }`}>
+                  {ch.status === 'completed' ? (
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
+                  ) : (
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                  )}
+                </div>
+                <div className="flex-1">
+                  <p className={`text-sm font-medium ${ch.status === 'completed' ? 'text-green-600 dark:text-green-400 line-through' : 'text-gray-800 dark:text-gray-100'}`}>
+                    {ch.description}
+                  </p>
+                  <div className="flex items-center gap-2 mt-1">
+                    <div className="flex-1 bg-gray-200 dark:bg-gray-700 rounded-full h-1.5">
+                      <div
+                        className={`h-full rounded-full ${ch.status === 'completed' ? 'bg-green-500' : 'bg-blue-500'}`}
+                        style={{ width: `${(ch.currentValue / ch.targetValue) * 100}%` }}
+                      ></div>
+                    </div>
+                    <span className="text-[10px] text-gray-400 dark:text-gray-500">{ch.currentValue}/{ch.targetValue}</span>
+                  </div>
+                </div>
+                <span className="text-[10px] text-yellow-600 dark:text-yellow-400 font-bold">+{ch.bonusPoints}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Badges */}
       <div className="mb-8">
@@ -259,12 +306,18 @@ function StudentDashboard({ data, user, getSurahName, scoreColor }) {
       )}
 
       {/* Quick Links */}
-      <div className="flex gap-3 animate-fade-in">
+      <div className="flex flex-wrap gap-3 animate-fade-in">
         <Link to="/halaqahs" className="bg-white dark:bg-gray-800 border-2 border-primary-200 dark:border-primary-800 text-primary-700 dark:text-primary-300 px-5 py-2.5 rounded-lg font-medium hover:bg-primary-50 dark:hover:bg-primary-900/20 transition text-sm">
           حلقاتي
         </Link>
         <Link to="/progress" className="bg-white dark:bg-gray-800 border-2 border-blue-200 dark:border-blue-800 text-blue-700 dark:text-blue-300 px-5 py-2.5 rounded-lg font-medium hover:bg-blue-50 dark:hover:bg-blue-900/20 transition text-sm">
           تقدم الحفظ
+        </Link>
+        <Link to="/leaderboard" className="bg-white dark:bg-gray-800 border-2 border-yellow-200 dark:border-yellow-800 text-yellow-700 dark:text-yellow-300 px-5 py-2.5 rounded-lg font-medium hover:bg-yellow-50 dark:hover:bg-yellow-900/20 transition text-sm">
+          المتصدرين
+        </Link>
+        <Link to="/rewards" className="bg-white dark:bg-gray-800 border-2 border-purple-200 dark:border-purple-800 text-purple-700 dark:text-purple-300 px-5 py-2.5 rounded-lg font-medium hover:bg-purple-50 dark:hover:bg-purple-900/20 transition text-sm">
+          المكافآت
         </Link>
       </div>
     </>

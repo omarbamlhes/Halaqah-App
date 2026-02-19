@@ -10,3 +10,8 @@ export { Message } from './message.entity';
 export { ParentChild } from './parent-child.entity';
 export { Attendance, AttendanceStatus } from './attendance.entity';
 export { Notification, NotificationType } from './notification.entity';
+export { PointTransaction, PointReason } from './point-transaction.entity';
+export { StudentBadge } from './student-badge.entity';
+export { Reward } from './reward.entity';
+export { RewardRedemption, RedemptionStatus } from './reward-redemption.entity';
+export { DailyChallenge, ChallengeType, ChallengeStatus } from './daily-challenge.entity';

@@ -1,9 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
+import { PointsService } from '../points/points.service';
+import { ChallengeService } from '../challenge/challenge.service';
 
 @Injectable()
 export class DashboardService {
-  constructor(private dataSource: DataSource) {}
+  constructor(
+    private dataSource: DataSource,
+    private pointsService: PointsService,
+    private challengeService: ChallengeService,
+  ) {}
 
   async getDashboard(userId: number, role: string) {
     switch (role) {
@@ -169,6 +175,12 @@ export class DashboardService {
       }
     }
 
+    const [totalPoints, rank, challengeData] = await Promise.all([
+      this.pointsService.getTotalPoints(studentId),
+      this.pointsService.getRank(studentId),
+      this.challengeService.getTodayChallenges(studentId),
+    ]);
+
     return {
       role: 'student',
       ...stats[0],
@@ -176,6 +188,10 @@ export class DashboardService {
       attendanceRate: parseInt(attendanceRate[0]?.rate || '0'),
       currentStreak,
       recentEvaluations,
+      totalPoints,
+      rank,
+      todayChallenges: challengeData.challenges,
+      challengeStreak: challengeData.streak,
     };
   }
 

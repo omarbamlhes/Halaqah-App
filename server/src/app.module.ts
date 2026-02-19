@@ -11,6 +11,9 @@ import { ParentModule } from './parent/parent.module';
 import { BadgeModule } from './badge/badge.module';
 import { NotificationModule } from './notification/notification.module';
 import { DashboardModule } from './dashboard/dashboard.module';
+import { PointsModule } from './points/points.module';
+import { RewardsModule } from './rewards/rewards.module';
+import { ChallengeModule } from './challenge/challenge.module';
 
 @Module({
   imports: [
@@ -35,6 +38,9 @@ import { DashboardModule } from './dashboard/dashboard.module';
     BadgeModule,
     NotificationModule,
     DashboardModule,
+    PointsModule,
+    RewardsModule,
+    ChallengeModule,
   ],
 })
 export class AppModule {}

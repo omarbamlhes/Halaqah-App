@@ -8,6 +8,10 @@ export enum NotificationType {
   STUDENT_JOINED = 'student_joined',
   REVIEW_ASSIGNED = 'review_assigned',
   CHILD_EVALUATION = 'child_evaluation',
+  POINTS_EARNED = 'points_earned',
+  CHALLENGE_COMPLETED = 'challenge_completed',
+  REWARD_REDEEMED = 'reward_redeemed',
+  REWARD_FULFILLED = 'reward_fulfilled',
 }
 
 @Entity('notifications')

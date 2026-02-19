@@ -1,11 +1,13 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Session, Attendance, HalaqahStudent, Halaqah, NotificationType } from '../entities';
+import { Session, Attendance, HalaqahStudent, Halaqah, NotificationType, PointReason, ChallengeType, AttendanceStatus } from '../entities';
 import { CreateSessionDto } from './dto/create-session.dto';
 import { UpdateSessionDto } from './dto/update-session.dto';
 import { AttendanceRecordDto } from './dto/save-attendance.dto';
 import { NotificationService } from '../notification/notification.service';
+import { PointsService } from '../points/points.service';
+import { ChallengeService } from '../challenge/challenge.service';
 
 @Injectable()
 export class SessionService {
@@ -15,6 +17,8 @@ export class SessionService {
     @InjectRepository(HalaqahStudent) private halaqahStudentRepo: Repository<HalaqahStudent>,
     @InjectRepository(Halaqah) private halaqahRepo: Repository<Halaqah>,
     private notificationService: NotificationService,
+    private pointsService: PointsService,
+    private challengeService: ChallengeService,
   ) {}
 
   async create(dto: CreateSessionDto) {
@@ -75,6 +79,30 @@ export class SessionService {
       return attendance;
     });
     await this.attendanceRepo.upsert(entities, ['sessionId', 'studentId']);
+
+    // Award points for attendance
+    for (const record of records) {
+      if (record.status === AttendanceStatus.PRESENT) {
+        await this.pointsService.awardPoints({
+          studentId: record.studentId,
+          reason: PointReason.ATTENDANCE_PRESENT,
+          referenceId: sessionId,
+          referenceType: 'attendance',
+          description: 'حضور جلسة',
+        });
+        await this.challengeService.updateProgress(record.studentId, ChallengeType.ATTEND_SESSION);
+      } else if (record.status === AttendanceStatus.LATE) {
+        await this.pointsService.awardPoints({
+          studentId: record.studentId,
+          reason: PointReason.ATTENDANCE_LATE,
+          referenceId: sessionId,
+          referenceType: 'attendance',
+          description: 'حضور متأخر',
+        });
+        await this.challengeService.updateProgress(record.studentId, ChallengeType.ATTEND_SESSION);
+      }
+    }
+
     return this.getAttendance(sessionId);
   }
 

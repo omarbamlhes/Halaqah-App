@@ -22,6 +22,9 @@ import TeacherStudentsPage from './pages/TeacherStudentsPage';
 import TeacherStudentDetailPage from './pages/TeacherStudentDetailPage';
 import ProfilePage from './pages/ProfilePage';
 import NotificationsPage from './pages/NotificationsPage';
+import LeaderboardPage from './pages/LeaderboardPage';
+import RewardsPage from './pages/RewardsPage';
+import ChallengesPage from './pages/ChallengesPage';
 import LandingPage from './pages/LandingPage';
 
 function AppRoutes() {
@@ -49,6 +52,9 @@ function AppRoutes() {
         <Route path="/parent/child/:studentId" element={<ProtectedRoute roles={['parent']}><ParentChildProgressPage /></ProtectedRoute>} />
         <Route path="/teacher/students" element={<ProtectedRoute roles={['teacher']}><TeacherStudentsPage /></ProtectedRoute>} />
         <Route path="/teacher/students/:studentId" element={<ProtectedRoute roles={['teacher']}><TeacherStudentDetailPage /></ProtectedRoute>} />
+        <Route path="/leaderboard" element={<ProtectedRoute><LeaderboardPage /></ProtectedRoute>} />
+        <Route path="/rewards" element={<ProtectedRoute><RewardsPage /></ProtectedRoute>} />
+        <Route path="/challenges" element={<ProtectedRoute roles={['student']}><ChallengesPage /></ProtectedRoute>} />
         <Route path="/notifications" element={<ProtectedRoute><NotificationsPage /></ProtectedRoute>} />
         <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
         <Route path="*" element={<Navigate to="/" />} />
