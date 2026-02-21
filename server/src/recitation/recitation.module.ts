@@ -7,6 +7,7 @@ import { ChatModule } from '../chat/chat.module';
 import { NotificationModule } from '../notification/notification.module';
 import { PointsModule } from '../points/points.module';
 import { ChallengeModule } from '../challenge/challenge.module';
+import { ReviewModule } from '../review/review.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { ChallengeModule } from '../challenge/challenge.module';
     NotificationModule,
     PointsModule,
     ChallengeModule,
+    ReviewModule,
   ],
   controllers: [RecitationController],
   providers: [RecitationService],

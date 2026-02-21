@@ -12,6 +12,7 @@ const POINT_VALUES: Record<string, number> = {
   [PointReason.EVALUATION_PERFECT]: 30,
   [PointReason.SURAH_COMPLETED]: 50,
   [PointReason.BADGE_EARNED]: 25,
+  [PointReason.ASSIGNMENT_COMPLETED]: 15,
 };
 
 @Injectable()

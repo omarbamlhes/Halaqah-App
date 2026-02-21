@@ -12,6 +12,7 @@ export enum PointReason {
   BADGE_EARNED = 'badge_earned',
   CHALLENGE_COMPLETED = 'challenge_completed',
   REWARD_REDEEMED = 'reward_redeemed',
+  ASSIGNMENT_COMPLETED = 'assignment_completed',
 }
 
 @Entity('point_transactions')

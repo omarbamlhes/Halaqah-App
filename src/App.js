@@ -25,6 +25,7 @@ import NotificationsPage from './pages/NotificationsPage';
 import LeaderboardPage from './pages/LeaderboardPage';
 import RewardsPage from './pages/RewardsPage';
 import ChallengesPage from './pages/ChallengesPage';
+import AssignmentsPage from './pages/AssignmentsPage';
 import LandingPage from './pages/LandingPage';
 
 function AppRoutes() {
@@ -55,6 +56,7 @@ function AppRoutes() {
         <Route path="/leaderboard" element={<ProtectedRoute><LeaderboardPage /></ProtectedRoute>} />
         <Route path="/rewards" element={<ProtectedRoute><RewardsPage /></ProtectedRoute>} />
         <Route path="/challenges" element={<ProtectedRoute roles={['student']}><ChallengesPage /></ProtectedRoute>} />
+        <Route path="/assignments" element={<ProtectedRoute roles={['teacher', 'student']}><AssignmentsPage /></ProtectedRoute>} />
         <Route path="/notifications" element={<ProtectedRoute><NotificationsPage /></ProtectedRoute>} />
         <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
         <Route path="*" element={<Navigate to="/" />} />

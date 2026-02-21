@@ -89,6 +89,24 @@ function TeacherDashboard({ data, getSurahName, scoreColor }) {
         </div>
       </div>
 
+      {/* Overdue Assignments Alert */}
+      {data.overdueAssignments > 0 && (
+        <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-4 mb-8 animate-fade-in-up">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-red-100 dark:bg-red-900/40 flex items-center justify-center">
+                <svg className="w-5 h-5 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" /></svg>
+              </div>
+              <div>
+                <p className="font-medium text-red-800 dark:text-red-200">{data.overdueAssignments} واجبات متأخرة</p>
+                <p className="text-xs text-red-600 dark:text-red-400">لدى الطلاب واجبات لم تُنجز في موعدها</p>
+              </div>
+            </div>
+            <Link to="/assignments" className="text-sm text-red-700 dark:text-red-300 hover:underline font-medium">عرض</Link>
+          </div>
+        </div>
+      )}
+
       {/* Quick Actions */}
       <div className="flex gap-3 mb-8 animate-fade-in">
         <Link to="/halaqahs/new" className="gradient-primary text-white px-5 py-2.5 rounded-lg font-medium btn-glow text-sm">
@@ -99,6 +117,9 @@ function TeacherDashboard({ data, getSurahName, scoreColor }) {
         </Link>
         <Link to="/teacher/students" className="bg-white dark:bg-gray-800 border-2 border-blue-200 dark:border-blue-800 text-blue-700 dark:text-blue-300 px-5 py-2.5 rounded-lg font-medium hover:bg-blue-50 dark:hover:bg-blue-900/20 transition text-sm">
           نظرة على الطلاب
+        </Link>
+        <Link to="/assignments" className="bg-white dark:bg-gray-800 border-2 border-orange-200 dark:border-orange-800 text-orange-700 dark:text-orange-300 px-5 py-2.5 rounded-lg font-medium hover:bg-orange-50 dark:hover:bg-orange-900/20 transition text-sm">
+          الواجبات
         </Link>
       </div>
 
@@ -267,6 +288,54 @@ function StudentDashboard({ data, user, getSurahName, scoreColor }) {
                 <span className="text-[10px] text-yellow-600 dark:text-yellow-400 font-bold">+{ch.bonusPoints}</span>
               </div>
             ))}
+          </div>
+        </div>
+      )}
+
+      {/* Pending Assignments Widget */}
+      {data.upcomingAssignments && data.upcomingAssignments.length > 0 && (
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border dark:border-gray-700 p-5 mb-8 animate-fade-in-up">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2">
+              <h3 className="font-bold text-gray-800 dark:text-gray-100">الواجبات القادمة</h3>
+              {data.overdueAssignments > 0 && (
+                <span className="text-xs px-2 py-0.5 rounded-full bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300">
+                  {data.overdueAssignments} متأخر
+                </span>
+              )}
+            </div>
+            <Link to="/assignments" className="text-xs text-primary-600 dark:text-primary-400 hover:underline">عرض الكل ({data.pendingAssignments})</Link>
+          </div>
+          <div className="space-y-3">
+            {data.upcomingAssignments.map(a => {
+              const isOverdue = a.dueDate < new Date().toISOString().split('T')[0];
+              return (
+                <div key={a.id} className={`flex items-center justify-between border rounded-lg p-3 card-hover ${
+                  isOverdue ? 'border-red-300 dark:border-red-700 bg-red-50/50 dark:bg-red-900/10' : 'dark:border-gray-700'
+                }`}>
+                  <div>
+                    <p className="font-medium text-gray-800 dark:text-gray-100 text-sm">
+                      {getSurahName(a.surahNumber)} ({a.fromAyah}-{a.toAyah})
+                    </p>
+                    <div className="flex items-center gap-2 mt-1">
+                      <span className={`text-xs px-2 py-0.5 rounded-full ${
+                        a.type === 'new'
+                          ? 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300'
+                          : 'bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300'
+                      }`}>
+                        {a.type === 'new' ? 'حفظ' : 'مراجعة'}
+                      </span>
+                      <span className={`text-xs ${isOverdue ? 'text-red-500 dark:text-red-400 font-medium' : 'text-gray-400 dark:text-gray-500'}`}>
+                        {new Date(a.dueDate).toLocaleDateString('ar')}
+                      </span>
+                    </div>
+                  </div>
+                  {isOverdue && (
+                    <span className="text-xs px-2 py-0.5 rounded-full bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300">متأخر</span>
+                  )}
+                </div>
+              );
+            })}
           </div>
         </div>
       )}

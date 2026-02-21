@@ -28,6 +28,15 @@ export class ReviewAssignment {
   @Column({ type: 'varchar', default: 'pending' })
   status: string; // 'pending' | 'completed'
 
+  @Column({ type: 'varchar', default: 'review' })
+  type: string; // 'new' | 'review'
+
+  @Column({ type: 'varchar', nullable: true })
+  notes: string;
+
+  @Column({ nullable: true })
+  assignedById: number;
+
   @ManyToOne(() => User)
   @JoinColumn({ name: 'studentId' })
   student: User;
@@ -35,6 +44,10 @@ export class ReviewAssignment {
   @ManyToOne(() => Halaqah)
   @JoinColumn({ name: 'halaqahId' })
   halaqah: Halaqah;
+
+  @ManyToOne(() => User, { nullable: true })
+  @JoinColumn({ name: 'assignedById' })
+  assignedBy: User;
 
   @CreateDateColumn()
   createdAt: Date;

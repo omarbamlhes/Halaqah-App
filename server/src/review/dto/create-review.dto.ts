@@ -1,4 +1,4 @@
-import { IsInt, IsDateString } from 'class-validator';
+import { IsInt, IsDateString, IsOptional, IsString, IsIn } from 'class-validator';
 
 export class CreateReviewDto {
   @IsInt()
@@ -18,4 +18,17 @@ export class CreateReviewDto {
 
   @IsDateString()
   dueDate: string;
+
+  @IsOptional()
+  @IsString()
+  @IsIn(['new', 'review'])
+  type?: string;
+
+  @IsOptional()
+  @IsString()
+  notes?: string;
+
+  @IsOptional()
+  @IsInt()
+  assignedById?: number;
 }

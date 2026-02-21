@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import { PointsService } from '../points/points.service';
 import { ChallengeService } from '../challenge/challenge.service';
+import { ReviewService } from '../review/review.service';
 
 @Injectable()
 export class DashboardService {
@@ -9,6 +10,7 @@ export class DashboardService {
     private dataSource: DataSource,
     private pointsService: PointsService,
     private challengeService: ChallengeService,
+    private reviewService: ReviewService,
   ) {}
 
   async getDashboard(userId: number, role: string) {
@@ -88,6 +90,8 @@ export class DashboardService {
       ORDER BY h.name
     `, [teacherId]);
 
+    const overdueAssignments = await this.reviewService.getTeacherOverdueCount(teacherId);
+
     return {
       role: 'teacher',
       ...stats[0],
@@ -95,6 +99,7 @@ export class DashboardService {
       recentSessions,
       recentEvaluations,
       halaqahSummaries,
+      overdueAssignments,
     };
   }
 
@@ -175,10 +180,13 @@ export class DashboardService {
       }
     }
 
-    const [totalPoints, rank, challengeData] = await Promise.all([
+    const [totalPoints, rank, challengeData, pendingAssignments, overdueAssignments, upcomingAssignments] = await Promise.all([
       this.pointsService.getTotalPoints(studentId),
       this.pointsService.getRank(studentId),
       this.challengeService.getTodayChallenges(studentId),
+      this.reviewService.getPendingCount(studentId),
+      this.reviewService.getOverdueCount(studentId),
+      this.reviewService.getUpcoming(studentId, 3),
     ]);
 
     return {
@@ -192,6 +200,9 @@ export class DashboardService {
       rank,
       todayChallenges: challengeData.challenges,
       challengeStreak: challengeData.streak,
+      pendingAssignments,
+      overdueAssignments,
+      upcomingAssignments,
     };
   }
 

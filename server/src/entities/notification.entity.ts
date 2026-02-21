@@ -12,6 +12,7 @@ export enum NotificationType {
   CHALLENGE_COMPLETED = 'challenge_completed',
   REWARD_REDEEMED = 'reward_redeemed',
   REWARD_FULFILLED = 'reward_fulfilled',
+  ASSIGNMENT_DUE_SOON = 'assignment_due_soon',
 }
 
 @Entity('notifications')

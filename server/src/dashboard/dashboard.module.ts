@@ -3,9 +3,10 @@ import { DashboardService } from './dashboard.service';
 import { DashboardController } from './dashboard.controller';
 import { PointsModule } from '../points/points.module';
 import { ChallengeModule } from '../challenge/challenge.module';
+import { ReviewModule } from '../review/review.module';
 
 @Module({
-  imports: [PointsModule, ChallengeModule],
+  imports: [PointsModule, ChallengeModule, ReviewModule],
   controllers: [DashboardController],
   providers: [DashboardService],
 })

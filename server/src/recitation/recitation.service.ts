@@ -8,6 +8,7 @@ import { ChatGateway } from '../chat/chat.gateway';
 import { NotificationService } from '../notification/notification.service';
 import { PointsService } from '../points/points.service';
 import { ChallengeService } from '../challenge/challenge.service';
+import { ReviewService } from '../review/review.service';
 
 @Injectable()
 export class RecitationService {
@@ -20,6 +21,7 @@ export class RecitationService {
     private notificationService: NotificationService,
     private pointsService: PointsService,
     private challengeService: ChallengeService,
+    private reviewService: ReviewService,
   ) {}
 
   async createRecitation(dto: CreateRecitationDto) {
@@ -39,6 +41,9 @@ export class RecitationService {
     // Update challenge progress
     const challengeType = saved.type === 'review' ? ChallengeType.REVIEW_RECITATION : ChallengeType.NEW_RECITATION;
     await this.challengeService.updateProgress(saved.studentId, challengeType);
+
+    // Auto-complete matching assignments
+    await this.reviewService.autoComplete(saved.studentId, saved.surahNumber, saved.fromAyah, saved.toAyah);
 
     return saved;
   }

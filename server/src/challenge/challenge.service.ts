@@ -111,7 +111,7 @@ export class ChallengeService {
       .where('dc.studentId = :studentId', { studentId })
       .andWhere('dc.status = :status', { status: ChallengeStatus.COMPLETED })
       .groupBy('dc.date')
-      .having('COUNT(*) = (SELECT COUNT(*) FROM daily_challenges dc2 WHERE dc2."studentId" = dc."studentId" AND dc2.date = dc.date)')
+      .having('COUNT(*) = (SELECT COUNT(*) FROM daily_challenges dc2 WHERE dc2."studentId" = :studentId AND dc2.date = dc.date)')
       .orderBy('dc.date', 'DESC')
       .getRawMany();
 
