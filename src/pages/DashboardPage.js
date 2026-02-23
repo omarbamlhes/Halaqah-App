@@ -6,6 +6,10 @@ import LoadingSpinner from '../components/LoadingSpinner';
 import Logo from '../components/Logo';
 import { HeroSection } from '../components/IslamicDecor';
 import BadgesSection from '../components/BadgesSection';
+import SurahDistributionChart from '../components/charts/SurahDistributionChart';
+import ScoresTrendChart from '../components/charts/ScoresTrendChart';
+import WeeklyPointsChart from '../components/charts/WeeklyPointsChart';
+import AttendanceChart from '../components/charts/AttendanceChart';
 import quranData from '../data/quran-metadata.json';
 import timeAgo from '../utils/timeAgo';
 
@@ -13,12 +17,18 @@ export default function DashboardPage() {
   const { user } = useAuth();
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [chartData, setChartData] = useState(null);
+  const [chartsLoading, setChartsLoading] = useState(true);
 
   useEffect(() => {
     api.get('/dashboard')
       .then(res => setData(res.data))
       .catch(err => console.error(err))
       .finally(() => setLoading(false));
+    api.get('/dashboard/charts')
+      .then(res => setChartData(res.data))
+      .catch(err => console.error(err))
+      .finally(() => setChartsLoading(false));
   }, []);
 
   if (user.role === 'parent') return <Navigate to="/parent" />;
@@ -44,15 +54,24 @@ export default function DashboardPage() {
 
       {/* Stat Cards */}
       {user.role === 'teacher' ? (
-        <TeacherDashboard data={data} getSurahName={getSurahName} scoreColor={scoreColor} />
+        <TeacherDashboard data={data} getSurahName={getSurahName} scoreColor={scoreColor} chartData={chartData} chartsLoading={chartsLoading} />
       ) : (
-        <StudentDashboard data={data} user={user} getSurahName={getSurahName} scoreColor={scoreColor} />
+        <StudentDashboard data={data} user={user} getSurahName={getSurahName} scoreColor={scoreColor} chartData={chartData} chartsLoading={chartsLoading} />
       )}
     </div>
   );
 }
 
-function TeacherDashboard({ data, getSurahName, scoreColor }) {
+function ChartSkeleton({ wide }) {
+  return (
+    <div className={`bg-white dark:bg-gray-800 rounded-xl shadow-sm border dark:border-gray-700 p-5 animate-pulse ${wide ? 'md:col-span-2' : ''}`}>
+      <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-32 mb-4"></div>
+      <div className="h-[250px] bg-gray-100 dark:bg-gray-700/50 rounded"></div>
+    </div>
+  );
+}
+
+function TeacherDashboard({ data, getSurahName, scoreColor, chartData, chartsLoading }) {
   const statCards = [
     { value: data.halaqahCount, label: 'حلقاتي', color: 'text-primary-600 dark:text-primary-400', iconBg: 'bg-primary-100 dark:bg-primary-900/40', gradient: 'gradient-card-green',
       icon: <svg className="w-5 h-5 text-primary-600 dark:text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg> },
@@ -87,6 +106,23 @@ function TeacherDashboard({ data, getSurahName, scoreColor }) {
         <div className="bg-gray-200 dark:bg-gray-700 rounded-full h-2.5 mt-3">
           <div className="bg-primary-500 h-full rounded-full transition-all" style={{ width: `${data.attendanceRate}%` }}></div>
         </div>
+      </div>
+
+      {/* Charts */}
+      <div className="grid md:grid-cols-2 gap-6 mb-8">
+        {chartsLoading ? (
+          <>
+            <ChartSkeleton wide />
+            <ChartSkeleton />
+            <ChartSkeleton />
+          </>
+        ) : chartData && (
+          <>
+            <AttendanceChart data={chartData.attendanceBreakdown} />
+            <ScoresTrendChart data={chartData.scoresTrend} />
+            <SurahDistributionChart data={chartData.studentsPerHalaqah} title="توزيع الطلاب على الحلقات" />
+          </>
+        )}
       </div>
 
       {/* Overdue Assignments Alert */}
@@ -205,7 +241,7 @@ function TeacherDashboard({ data, getSurahName, scoreColor }) {
   );
 }
 
-function StudentDashboard({ data, user, getSurahName, scoreColor }) {
+function StudentDashboard({ data, user, getSurahName, scoreColor, chartData, chartsLoading }) {
   const statCards = [
     { value: data.halaqahCount, label: 'حلقاتي', color: 'text-primary-600 dark:text-primary-400', iconBg: 'bg-primary-100 dark:bg-primary-900/40', gradient: 'gradient-card-green',
       icon: <svg className="w-5 h-5 text-primary-600 dark:text-primary-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg> },
@@ -248,6 +284,23 @@ function StudentDashboard({ data, user, getSurahName, scoreColor }) {
             {data.currentStreak} <span className="text-base">يوم</span>
           </p>
         </div>
+      </div>
+
+      {/* Charts */}
+      <div className="grid md:grid-cols-2 gap-6 mb-8">
+        {chartsLoading ? (
+          <>
+            <ChartSkeleton />
+            <ChartSkeleton />
+            <ChartSkeleton wide />
+          </>
+        ) : chartData && (
+          <>
+            <SurahDistributionChart data={chartData.surahDistribution} />
+            <WeeklyPointsChart data={chartData.weeklyPoints} />
+            <ScoresTrendChart data={chartData.scoresTrend} />
+          </>
+        )}
       </div>
 
       {/* Daily Challenges Widget */}

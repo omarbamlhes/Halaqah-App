@@ -4,6 +4,7 @@ import { useAuth } from '../contexts/AuthContext';
 import api from '../api/axios';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { HeroSection } from '../components/IslamicDecor';
+import ChildrenComparisonChart from '../components/charts/ChildrenComparisonChart';
 
 export default function ParentDashboardPage() {
   const { user } = useAuth();
@@ -14,6 +15,7 @@ export default function ParentDashboardPage() {
   const [adding, setAdding] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [chartData, setChartData] = useState(null);
 
   useEffect(() => {
     Promise.all([
@@ -24,6 +26,9 @@ export default function ParentDashboardPage() {
       setDashData(dashRes.data);
     }).catch(console.error)
       .finally(() => setLoading(false));
+    api.get('/dashboard/charts')
+      .then(res => setChartData(res.data))
+      .catch(console.error);
   }, []);
 
   const loadChildren = async () => {
@@ -102,6 +107,13 @@ export default function ParentDashboardPage() {
         {error && <p className="text-red-500 dark:text-red-400 text-sm mt-2 animate-fade-in">{error}</p>}
         {success && <p className="text-green-600 dark:text-green-400 text-sm mt-2 animate-fade-in">{success}</p>}
       </div>
+
+      {/* Children Comparison Chart */}
+      {chartData?.childrenComparison && (
+        <div className="mb-6">
+          <ChildrenComparisonChart data={chartData.childrenComparison} />
+        </div>
+      )}
 
       {/* Children with stats */}
       <div className="animate-fade-in-up">

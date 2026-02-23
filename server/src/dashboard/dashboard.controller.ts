@@ -11,4 +11,9 @@ export class DashboardController {
   getDashboard(@Request() req) {
     return this.dashboardService.getDashboard(req.user.id, req.user.role);
   }
+
+  @Get('charts')
+  getCharts(@Request() req) {
+    return this.dashboardService.getChartData(req.user.id, req.user.role);
+  }
 }
