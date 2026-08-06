@@ -6,6 +6,7 @@ import Navbar from './components/Navbar';
 import NotificationToast from './components/NotificationToast';
 import LoadingSpinner from './components/LoadingSpinner';
 import Footer from './components/Footer';
+import InstallPrompt from './components/InstallPrompt';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import DashboardPage from './pages/DashboardPage';
@@ -26,6 +27,7 @@ import LeaderboardPage from './pages/LeaderboardPage';
 import RewardsPage from './pages/RewardsPage';
 import ChallengesPage from './pages/ChallengesPage';
 import AssignmentsPage from './pages/AssignmentsPage';
+import MushafPage from './pages/MushafPage';
 import LandingPage from './pages/LandingPage';
 
 function AppRoutes() {
@@ -49,6 +51,7 @@ function AppRoutes() {
         <Route path="/halaqahs/:halaqahId/chat" element={<ProtectedRoute><ChatPage /></ProtectedRoute>} />
         <Route path="/sessions/:id" element={<ProtectedRoute><SessionDetailPage /></ProtectedRoute>} />
         <Route path="/progress" element={<ProtectedRoute><ProgressPage /></ProtectedRoute>} />
+        <Route path="/mushaf" element={<ProtectedRoute><MushafPage /></ProtectedRoute>} />
         <Route path="/parent" element={<ProtectedRoute roles={['parent']}><ParentDashboardPage /></ProtectedRoute>} />
         <Route path="/parent/child/:studentId" element={<ProtectedRoute roles={['parent']}><ParentChildProgressPage /></ProtectedRoute>} />
         <Route path="/teacher/students" element={<ProtectedRoute roles={['teacher']}><TeacherStudentsPage /></ProtectedRoute>} />
@@ -73,6 +76,7 @@ function App() {
       <SocketProvider>
         <div className="min-h-screen bg-gray-50 dark:bg-gray-900 font-sans flex flex-col transition-colors duration-200">
           <AppRoutes />
+          <InstallPrompt />
         </div>
       </SocketProvider>
     </AuthProvider>

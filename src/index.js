@@ -15,3 +15,13 @@ root.render(
     </ThemeProvider>
   </React.StrictMode>
 );
+
+// تسجيل الـ Service Worker لتفعيل خصائص تطبيق الجوال (PWA) — في الإنتاج فقط.
+// في وضع التطوير يتعارض تخزين الـ SW مع تحديثات الكود (HMR) فيخدم نسخاً قديمة.
+if (process.env.NODE_ENV === 'production' && 'serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch((err) => {
+      console.warn('SW registration failed:', err);
+    });
+  });
+}

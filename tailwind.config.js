@@ -28,6 +28,7 @@ module.exports = {
       },
       fontFamily: {
         arabic: ['Amiri', 'serif'],
+        quran: ['"Amiri Quran"', 'Amiri', 'serif'],
         sans: ['Tajawal', 'sans-serif'],
       },
       keyframes: {

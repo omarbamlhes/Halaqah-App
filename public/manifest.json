@@ -1,6 +1,9 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "حلقة",
+  "name": "حلقة - منصة حلقات القرآن الكريم",
+  "description": "منصة لإدارة حلقات تحفيظ القرآن الكريم: الحفظ، المراجعة، الحضور، والتقييم",
+  "lang": "ar",
+  "dir": "rtl",
   "icons": [
     {
       "src": "favicon.ico",
@@ -10,16 +13,21 @@
     {
       "src": "logo192.png",
       "type": "image/png",
-      "sizes": "192x192"
+      "sizes": "192x192",
+      "purpose": "any maskable"
     },
     {
       "src": "logo512.png",
       "type": "image/png",
-      "sizes": "512x512"
+      "sizes": "512x512",
+      "purpose": "any maskable"
     }
   ],
   "start_url": ".",
+  "scope": ".",
   "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "orientation": "portrait",
+  "theme_color": "#047857",
+  "background_color": "#065f46",
+  "categories": ["education", "books"]
 }

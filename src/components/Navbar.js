@@ -73,6 +73,7 @@ export default function Navbar() {
 
   const navLinks = [];
   navLinks.push({ to: '/', label: 'الرئيسية' });
+  navLinks.push({ to: '/mushaf', label: 'المصحف' });
 
   if (user.role === 'parent') {
     navLinks.push({ to: '/parent', label: 'أبنائي' });

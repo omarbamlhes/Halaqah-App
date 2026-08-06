@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import api from '../api/axios';
 import LoadingSpinner from '../components/LoadingSpinner';
@@ -134,14 +135,23 @@ function StudentView() {
                       </p>
                     )}
                   </div>
-                  {a.status === 'pending' && (
-                    <button
-                      onClick={() => handleComplete(a.id)}
-                      className="gradient-primary text-white px-4 py-2 rounded-lg text-sm font-medium btn-glow"
+                  <div className="flex flex-col gap-2 items-stretch">
+                    <Link
+                      to={`/mushaf?surah=${a.surahNumber}&from=${a.fromAyah}&to=${a.toAyah}`}
+                      className="flex items-center justify-center gap-1.5 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 px-4 py-2 rounded-lg text-sm font-medium hover:bg-emerald-100 dark:hover:bg-emerald-900/50 transition whitespace-nowrap"
                     >
-                      أتممت
-                    </button>
-                  )}
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.536 8.464a5 5 0 010 7.072M12 6a7.975 7.975 0 015.657 2.343m0 0a7.975 7.975 0 010 11.314M9 10v4a1 1 0 001 1h1l3 3V6l-3 3H10a1 1 0 00-1 1z" /></svg>
+                      استمع للواجب
+                    </Link>
+                    {a.status === 'pending' && (
+                      <button
+                        onClick={() => handleComplete(a.id)}
+                        className="gradient-primary text-white px-4 py-2 rounded-lg text-sm font-medium btn-glow whitespace-nowrap"
+                      >
+                        أتممت
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
             );
